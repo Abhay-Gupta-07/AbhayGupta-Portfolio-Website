@@ -108,34 +108,63 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     }
   };
 
+  const handleClose = () => {
+    onSave(formData);
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  /* Helper utilities for parsing comma/newline delimited text into string arrays */
+  const parseCommaTags = (raw: any): string[] => {
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'string') return raw.split(',').map((s) => s.trim()).filter(Boolean);
+    return ['React', 'Python'];
+  };
+
+  const parseLineFeatures = (raw: any): string[] => {
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'string') return raw.split(/\n|,/).map((s) => s.trim()).filter(Boolean);
+    return ['Feature 1', 'Feature 2'];
+  };
+
   /* Project Manager Handlers */
   const handleSaveProject = () => {
     if (!editingProject?.title) return;
 
+    const newProj: Project = {
+      id: isAddingProject ? `proj-${Date.now()}` : (editingProject.id || `proj-${Date.now()}`),
+      title: editingProject.title || 'New Project',
+      subtitle: editingProject.subtitle || 'Subheading description',
+      description: editingProject.description || 'Short summary',
+      longDescription: editingProject.longDescription || editingProject.description || 'Detailed architecture overview...',
+      category: (editingProject.category as any) || 'Full Stack',
+      tags: parseCommaTags(editingProject.tags),
+      techStack: parseCommaTags(editingProject.techStack),
+      features: parseLineFeatures(editingProject.features),
+      image: editingProject.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop',
+      liveUrl: editingProject.liveUrl || 'https://abhaygupta.vercel.app/',
+      githubUrl: editingProject.githubUrl || 'https://github.com/Abhay-Gupta-07',
+      featured: editingProject.featured ?? true,
+      metrics: editingProject.metrics || '60 FPS',
+    };
+
+    let updatedProjects: Project[];
     if (isAddingProject) {
-      const newProj: Project = {
-        id: `proj-${Date.now()}`,
-        title: editingProject.title || 'New Project',
-        subtitle: editingProject.subtitle || 'Subheading description',
-        description: editingProject.description || 'Short summary',
-        longDescription: editingProject.longDescription || 'Detailed architecture overview...',
-        category: (editingProject.category as any) || 'Full Stack',
-        tags: editingProject.tags || ['React', 'Python'],
-        image: editingProject.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop',
-        liveUrl: editingProject.liveUrl || 'https://abhaygupta.vercel.app/',
-        githubUrl: editingProject.githubUrl || 'https://github.com/Abhay-Gupta-07',
-        featured: editingProject.featured ?? true,
-        metrics: editingProject.metrics || '60 FPS',
-        features: editingProject.features || ['Feature 1', 'Feature 2'],
-        techStack: editingProject.techStack || ['Next.js', 'Python']
-      };
-      setFormData((prev) => ({ ...prev, projects: [...prev.projects, newProj] }));
+      updatedProjects = [...formData.projects, newProj];
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        projects: prev.projects.map((p) => (p.id === editingProject.id ? ({ ...p, ...editingProject } as Project) : p)),
-      }));
+      updatedProjects = formData.projects.map((p) => (p.id === newProj.id ? newProj : p));
     }
+
+    const updatedFormData: PortfolioData = {
+      ...formData,
+      projects: updatedProjects,
+    };
+
+    setFormData(updatedFormData);
+    onSave(updatedFormData);
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 3000);
 
     setEditingProject(null);
     setIsAddingProject(false);
@@ -143,10 +172,14 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
 
   const handleDeleteProject = (id: string) => {
     if (confirm('Delete this project?')) {
-      setFormData((prev) => ({
-        ...prev,
-        projects: prev.projects.filter((p) => p.id !== id),
-      }));
+      const updatedFormData: PortfolioData = {
+        ...formData,
+        projects: formData.projects.filter((p) => p.id !== id),
+      };
+      setFormData(updatedFormData);
+      onSave(updatedFormData);
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
     }
   };
 
@@ -154,6 +187,7 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
   const handleSaveCertificate = () => {
     if (!editingCert?.title) return;
 
+    let updatedCerts: Certificate[];
     if (isAddingCert) {
       const newCert: Certificate = {
         id: `cert-${Date.now()}`,
@@ -162,19 +196,29 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
         date: editingCert.date || '2026',
         credentialUrl: editingCert.credentialUrl || 'https://www.linkedin.com/in/abhay-gupta-6546aa299/',
         badge: editingCert.badge || 'VERIFIED CREDENTIAL',
-        skillsCovered: editingCert.skillsCovered || ['AI/ML', 'Full-Stack'],
+        skillsCovered: Array.isArray(editingCert.skillsCovered)
+          ? editingCert.skillsCovered
+          : typeof editingCert.skillsCovered === 'string'
+          ? (editingCert.skillsCovered as string).split(',').map((s) => s.trim()).filter(Boolean)
+          : ['AI/ML', 'Full-Stack'],
         imageUrl: editingCert.imageUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop'
       };
-      setFormData((prev) => ({
-        ...prev,
-        certificates: [...(prev.certificates || []), newCert]
-      }));
+      updatedCerts = [...(formData.certificates || []), newCert];
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        certificates: (prev.certificates || []).map((c) => (c.id === editingCert.id ? ({ ...c, ...editingCert } as Certificate) : c)),
-      }));
+      updatedCerts = (formData.certificates || []).map((c) =>
+        c.id === editingCert.id ? ({ ...c, ...editingCert } as Certificate) : c
+      );
     }
+
+    const updatedFormData: PortfolioData = {
+      ...formData,
+      certificates: updatedCerts,
+    };
+
+    setFormData(updatedFormData);
+    onSave(updatedFormData);
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 3000);
 
     setEditingCert(null);
     setIsAddingCert(false);
@@ -182,10 +226,14 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
 
   const handleDeleteCertificate = (id: string) => {
     if (confirm('Delete this certificate?')) {
-      setFormData((prev) => ({
-        ...prev,
-        certificates: (prev.certificates || []).filter((c) => c.id !== id),
-      }));
+      const updatedFormData: PortfolioData = {
+        ...formData,
+        certificates: (formData.certificates || []).filter((c) => c.id !== id),
+      };
+      setFormData(updatedFormData);
+      onSave(updatedFormData);
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
     }
   };
 
@@ -336,7 +384,7 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
           <div className="flex flex-wrap items-center gap-3">
             {onClose && (
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold flex items-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -770,25 +818,107 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                 </div>
 
                 <div>
-                  <label className="text-xs font-code text-gray-400">Category</label>
-                  <select
-                    value={editingProject.category || 'Full Stack'}
-                    onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value as any })}
+                  <label className="text-xs font-code text-gray-400">Subtitle / Tagline</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Real-Time Vision & Robotics Platform"
+                    value={editingProject.subtitle || ''}
+                    onChange={(e) => setEditingProject({ ...editingProject, subtitle: e.target.value })}
                     className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
-                  >
-                    <option value="Full Stack">Full Stack</option>
-                    <option value="AI & Vision">AI & Vision</option>
-                    <option value="Robotics / IoT">Robotics / IoT</option>
-                    <option value="Mobile">Mobile</option>
-                  </select>
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-code text-gray-400">Category</label>
+                    <select
+                      value={editingProject.category || 'Full Stack'}
+                      onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value as any })}
+                      className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
+                    >
+                      <option value="Full Stack">Full Stack</option>
+                      <option value="AI & Vision">AI & Vision</option>
+                      <option value="Robotics / IoT">Robotics / IoT</option>
+                      <option value="Mobile">Mobile</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-code text-gray-400">Metrics Tag (e.g. 60 FPS, 99.9% Uptime)</label>
+                    <input
+                      type="text"
+                      placeholder="60 FPS"
+                      value={editingProject.metrics || ''}
+                      onChange={(e) => setEditingProject({ ...editingProject, metrics: e.target.value })}
+                      className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-code text-gray-400">Short Summary</label>
+                  <label className="text-xs font-code text-gray-400">Short Summary (Grid Display)</label>
                   <textarea
                     rows={2}
                     value={editingProject.description || ''}
                     onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
+                    className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-code text-gray-400">Detailed Architecture Overview (Modal Deep Dive)</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Comprehensive explanation of system architecture, pipelines, and performance..."
+                    value={editingProject.longDescription || ''}
+                    onChange={(e) => setEditingProject({ ...editingProject, longDescription: e.target.value })}
+                    className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white resize-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-code text-gray-400">Card Hashtags (Comma-separated)</label>
+                    <input
+                      type="text"
+                      placeholder="React, Python, OpenCV"
+                      value={
+                        Array.isArray(editingProject.tags)
+                          ? editingProject.tags.join(', ')
+                          : editingProject.tags || ''
+                      }
+                      onChange={(e) => setEditingProject({ ...editingProject, tags: e.target.value as any })}
+                      className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-code text-gray-400">Tech Stack Pills (Comma-separated)</label>
+                    <input
+                      type="text"
+                      placeholder="Next.js, PyTorch, WebGL"
+                      value={
+                        Array.isArray(editingProject.techStack)
+                          ? editingProject.techStack.join(', ')
+                          : editingProject.techStack || ''
+                      }
+                      onChange={(e) => setEditingProject({ ...editingProject, techStack: e.target.value as any })}
+                      className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-code text-gray-400">Key Features / Highlights (One per line or comma-separated)</label>
+                  <textarea
+                    rows={2}
+                    placeholder="Real-time multi-threading\nLow latency WebGL canvas rendering"
+                    value={
+                      Array.isArray(editingProject.features)
+                        ? editingProject.features.join('\n')
+                        : editingProject.features || ''
+                    }
+                    onChange={(e) => setEditingProject({ ...editingProject, features: e.target.value as any })}
                     className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white resize-none"
                   />
                 </div>
