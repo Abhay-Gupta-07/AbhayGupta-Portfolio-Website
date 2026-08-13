@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send } from 'lucide-react';
 import type { PortfolioData, Project, Certificate } from '../data/portfolioData';
@@ -22,6 +22,10 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
 
   // Admin Data & Tabs State
   const [formData, setFormData] = useState<PortfolioData>(data);
+
+  useEffect(() => {
+    setFormData(data);
+  }, [data]);
   const [activeTab, setActiveTab] = useState<'profile' | 'projects' | 'certificates' | 'skills' | 'socials' | 'inbox'>('projects');
   const [inboxMessages, setInboxMessages] = useState<any[]>(() => {
     try {
@@ -92,6 +96,16 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     onSave(formData);
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);
+  };
+
+  const handleSaveAndClose = () => {
+    onSave(formData);
+    setSavedSuccess(true);
+    if (onClose) {
+      setTimeout(() => {
+        onClose();
+      }, 400);
+    }
   };
 
   /* Project Manager Handlers */
@@ -319,11 +333,11 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             {onClose && (
               <button
                 onClick={onClose}
-                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold flex items-center gap-2"
+                className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold flex items-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Site
@@ -332,11 +346,21 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
 
             <button
               onClick={handleSave}
-              className="px-6 py-2.5 rounded-xl font-semibold text-white bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-600 shadow-[0_0_20px_rgba(255,30,45,0.4)] flex items-center gap-2 text-xs"
+              className="px-5 py-2.5 rounded-xl font-semibold text-white bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-600 shadow-[0_0_20px_rgba(255,30,45,0.4)] flex items-center gap-2 text-xs"
             >
               <Save className="w-4 h-4" />
               Save All Changes
             </button>
+
+            {onClose && (
+              <button
+                onClick={handleSaveAndClose}
+                className="px-5 py-2.5 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] border border-emerald-400/30 flex items-center gap-2 text-xs"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                Save & View Main Page
+              </button>
+            )}
 
             <button
               onClick={handleLogout}

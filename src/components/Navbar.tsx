@@ -52,7 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection }) => {
         {/* Brand / Logo */}
         <a href="#hero" className="flex items-center gap-2 group shrink-0">
           <span className="font-outfit font-extrabold text-xs sm:text-sm tracking-widest text-white group-hover:text-crimson-500 transition-colors flex items-center gap-2 whitespace-nowrap uppercase">
-            {data.name} <span className="text-crimson-500 font-extrabold">/</span> <span className="text-gray-300 font-bold text-[11px] sm:text-xs">CSE AI & ML ENGINEER</span>
+            {data.name || 'ABHAY GUPTA'} <span className="text-crimson-500 font-extrabold">/</span> <span className="text-gray-300 font-bold text-[11px] sm:text-xs">CSE AI & ML ENGINEER</span>
           </span>
         </a>
 

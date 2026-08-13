@@ -98,9 +98,9 @@ export const LanyardCard: React.FC<LanyardCardProps> = ({ data }) => {
                     className="w-full h-full object-cover object-[center_35%] scale-125 transition-transform duration-300 pointer-events-none select-none"
                   />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-crimson-500 font-bebas text-4xl bg-neutral-950">
-                    ABHAY GUPTA
-                    <span className="text-xs font-code text-gray-400">AI ENGINEER</span>
+                  <div className="w-full h-full flex flex-col items-center justify-center text-crimson-500 font-bebas text-4xl bg-neutral-950 px-2 text-center">
+                    {data.name}
+                    <span className="text-xs font-code text-gray-400 mt-1">{data.titles?.[0] || 'AI ENGINEER'}</span>
                   </div>
                 )}
               </div>
@@ -111,13 +111,13 @@ export const LanyardCard: React.FC<LanyardCardProps> = ({ data }) => {
                 <div className="absolute bottom-2 left-2 w-2.5 h-2.5 rounded-full bg-neutral-200 border border-neutral-500 shadow-sm z-30" />
                 <div className="absolute bottom-2 right-2 w-2.5 h-2.5 rounded-full bg-neutral-200 border border-neutral-500 shadow-sm z-30" />
 
-                {/* Centered Vertical Stack: Small Developer on Top, Bold Red ABHAY on Bottom */}
+                {/* Centered Vertical Stack: Small Developer on Top, Bold Red Name on Bottom */}
                 <div className="flex flex-col items-center justify-center space-y-0.5 w-full">
                   <div className="font-hand text-white/95 text-xs sm:text-sm italic tracking-wider leading-none">
                     Developer
                   </div>
-                  <div className="font-bebas text-[#ff1e2d] text-3xl sm:text-4xl font-extrabold tracking-widest leading-none drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
-                    ABHAY
+                  <div className="font-bebas text-[#ff1e2d] text-3xl sm:text-4xl font-extrabold tracking-widest leading-none drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] truncate max-w-[220px] text-center">
+                    {(data.name || 'ABHAY').trim().split(' ')[0]}
                   </div>
                 </div>
               </div>

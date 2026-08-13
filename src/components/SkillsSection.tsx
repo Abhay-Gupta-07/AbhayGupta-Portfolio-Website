@@ -53,16 +53,21 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
         })}
       </div>
 
-      {/* Active Category Description */}
-      <div className="text-center mb-8">
-        <p className="text-gray-400 text-xs font-code italic">
-          // {skills[activeTab]?.description}
-        </p>
-      </div>
+      {/* Active Category Description & Skills Grid */}
+      {(() => {
+        const currentCategory = skills[activeTab] || skills[0];
+        if (!currentCategory) return null;
 
-      {/* Skills Progress Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {skills[activeTab]?.skills.map((skill, sIdx) => (
+        return (
+          <>
+            <div className="text-center mb-8">
+              <p className="text-gray-400 text-xs font-code italic">
+                // {currentCategory.description}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {currentCategory.skills.map((skill, sIdx) => (
           <motion.div
             key={skill.name}
             initial={{ opacity: 0, x: sIdx % 2 === 0 ? -20 : 20 }}
@@ -103,6 +108,9 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
           </motion.div>
         ))}
       </div>
+          </>
+        );
+      })()}
     </section>
   );
 };

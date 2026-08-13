@@ -34,7 +34,23 @@ export const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
 
-  // Sync route check for /spidey or ?spidey=true URL
+  // Cross-tab synchronization via localStorage events
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'abhay_portfolio_data_v1' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          setPortfolioData(parsed);
+        } catch (err) {
+          console.error('Error loading synced portfolio data:', err);
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Sync route check for /spidey or ?admin=true URL
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('admin') === 'true' || window.location.pathname.includes('spidey')) {
@@ -77,13 +93,22 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleCloseAdmin = () => {
+    setIsAdminOpen(false);
+    if (window.location.search.includes('admin=')) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('admin');
+      window.history.replaceState({}, '', url.pathname + (url.search ? url.search : '') + url.hash);
+    }
+  };
+
   if (isAdminOpen) {
     return (
       <SpideyAdmin
         data={portfolioData}
         onSave={handleSavePortfolioData}
         onReset={handleResetPortfolioData}
-        onClose={() => setIsAdminOpen(false)}
+        onClose={handleCloseAdmin}
       />
     );
   }
