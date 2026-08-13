@@ -35,38 +35,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
               Hello, I'm
             </div>
 
-            {(() => {
-              const nameParts = (data.name || 'ABHAY GUPTA').trim().split(' ');
-              const firstName = nameParts[0] || 'ABHAY';
-              const lastName = nameParts.slice(1).join(' ') || 'GUPTA';
-              return (
-                <h1 className="font-bebas text-7xl sm:text-8xl lg:text-9xl tracking-tight text-white leading-[0.85] font-bold uppercase flex flex-col drop-shadow-2xl relative z-10">
-                  <span className="text-[#ff1e2d] text-glow drop-shadow-[0_0_35px_rgba(255,30,45,0.9)]">
-                    {firstName}
-                  </span>
-                  <span className="text-white">{lastName}</span>
-                </h1>
-              );
-            })()}
+            <h1 className="font-bebas text-7xl sm:text-8xl lg:text-9xl tracking-tight text-white leading-[0.85] font-bold uppercase flex flex-col drop-shadow-2xl relative z-10">
+              <span className="text-[#ff1e2d] text-glow drop-shadow-[0_0_35px_rgba(255,30,45,0.9)]">
+                ABHAY
+              </span>
+              <span className="text-white">GUPTA</span>
+            </h1>
           </div>
 
           {/* Glowing Red Subtitle Spec Bar */}
           <div className="font-code text-xs sm:text-sm text-crimson-500 font-extrabold tracking-wider uppercase flex flex-wrap items-center gap-2 pt-1 drop-shadow-[0_0_10px_rgba(255,30,45,0.6)]">
-            {data.titles && data.titles.length > 0 ? (
-              data.titles.map((title, idx) => (
-                <React.Fragment key={idx}>
-                  {idx > 0 && <span className="text-white">•</span>}
-                  <span>{title}</span>
-                </React.Fragment>
-              ))
-            ) : (
-              <span>AI & MACHINE LEARNING ENGINEER</span>
-            )}
+            <span>AI & MACHINE LEARNING ENGINEER</span>
+            <span className="text-white">•</span>
+            <span>FULL-STACK & FLUTTER DEVELOPER</span>
+            <span className="text-white">•</span>
+            <span>COMPUTER VISION SPECIALIST</span>
+            <span className="text-white">•</span>
+            <span>B.TECH CSE (FINAL YEAR)</span>
           </div>
 
           {/* Bio Subtitle Paragraph */}
           <p className="text-gray-300 text-sm sm:text-base leading-relaxed max-w-xl font-normal pt-1">
-            {data.bio}
+            A Computer Science student at Mahaveer Institute of Science and Technology in Hyderabad specializing in AI and Machine Learning. Passionate about neural networks, computer vision, robotics, and full-stack web engineering—crafting high-performance digital platforms at ultra-high speed.
           </p>
 
           {/* Quick Action CTA Buttons */}
@@ -110,35 +100,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
           <div className="w-full max-w-sm p-4 rounded-2xl glass-card border border-crimson-500/30 flex items-start gap-3 shadow-lg">
             <Sparkles className="w-4 h-4 text-crimson-500 shrink-0 mt-0.5" />
             <p className="text-xs text-gray-300 leading-snug font-medium">
-              {data.longBio || data.bio}
+              Building intelligent web applications, AI face recognition biometric systems, and leading campus tech innovation at MIST Hyderabad.
             </p>
           </div>
 
           {/* Right Vertical Stats Stack */}
           <div className="w-full max-w-sm grid grid-cols-3 gap-3 text-left pt-1">
-            {data.stats && data.stats.length > 0 ? (
-              data.stats.slice(0, 3).map((stat, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
-                  <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">{stat.value}</div>
-                  <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight uppercase">{stat.label}</div>
-                </div>
-              ))
-            ) : (
-              <>
-                <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
-                  <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">FINAL YR</div>
-                  <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">B.TECH CSE (AI/ML) @ MIST</div>
-                </div>
-                <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
-                  <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">10+</div>
-                  <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">FEATURED AI PROJECTS</div>
-                </div>
-                <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
-                  <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">MIST</div>
-                  <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">TECHNICAL AI LEAD</div>
-                </div>
-              </>
-            )}
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
+              <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">FINAL YR</div>
+              <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">B.TECH CSE (AI/ML) @ MIST</div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
+              <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">10+</div>
+              <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">FEATURED AI PROJECTS</div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
+              <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">MIST</div>
+              <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">TECHNICAL AI LEAD</div>
+            </div>
           </div>
         </motion.div>
 

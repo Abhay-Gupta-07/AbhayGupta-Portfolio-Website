@@ -64,7 +64,16 @@ export const HeroCanvas: React.FC<HeroCanvasProps> = ({ totalFrames = 192 }) => 
         Math.floor(scrollProgress * totalFrames)
       );
 
-      const frameImage = imagesRef.current[frameIndex] || null;
+      let frameImage = imagesRef.current[frameIndex] || null;
+      if (frameImage && (!frameImage.complete || frameImage.naturalWidth === 0)) {
+        for (let i = frameIndex - 1; i >= 0; i--) {
+          const prev = imagesRef.current[i];
+          if (prev && prev.complete && prev.naturalWidth > 0) {
+            frameImage = prev;
+            break;
+          }
+        }
+      }
 
       renderCanvasFrame(
         ctx,
