@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings } from 'lucide-react';
+import { motion, Reorder } from 'framer-motion';
+import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings, GripVertical } from 'lucide-react';
 import type { PortfolioData, Project, Certificate } from '../data/portfolioData';
 import { getFirebaseConfig, saveFirebaseConfig, testDBConnection, savePortfolioDataToDB, fetchPortfolioDataFromDB, ensureValidPortfolioData } from '../services/db';
 
@@ -128,7 +128,25 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     }
   };
 
-  /* Project & Certificate Reordering Handlers */
+  /* Project & Certificate Drag & Drop Reordering Handlers */
+  const handleReorderProjects = (newProjects: Project[]) => {
+    const updated = ensureValidPortfolioData({
+      ...formData,
+      projects: newProjects,
+    });
+    setFormData(updated);
+    onSave(updated);
+  };
+
+  const handleReorderCertificates = (newCerts: Certificate[]) => {
+    const updated = ensureValidPortfolioData({
+      ...formData,
+      certificates: newCerts,
+    });
+    setFormData(updated);
+    onSave(updated);
+  };
+
   const handleMoveProject = (index: number, direction: 'up' | 'down') => {
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= formData.projects.length) return;
@@ -136,7 +154,7 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     const temp = updatedProjects[index];
     updatedProjects[index] = updatedProjects[targetIndex];
     updatedProjects[targetIndex] = temp;
-    const updatedFormData = { ...formData, projects: updatedProjects };
+    const updatedFormData = ensureValidPortfolioData({ ...formData, projects: updatedProjects });
     setFormData(updatedFormData);
     onSave(updatedFormData);
     setSavedSuccess(true);
@@ -150,7 +168,7 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     const temp = updatedCerts[index];
     updatedCerts[index] = updatedCerts[targetIndex];
     updatedCerts[targetIndex] = temp;
-    const updatedFormData = { ...formData, certificates: updatedCerts };
+    const updatedFormData = ensureValidPortfolioData({ ...formData, certificates: updatedCerts });
     setFormData(updatedFormData);
     onSave(updatedFormData);
     setSavedSuccess(true);
@@ -620,51 +638,70 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
               </button>
             </div>
 
-            {/* List of Existing Projects */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Drag & Drop Reorderable List of Projects */}
+            <p className="text-xs font-code text-gray-400">
+              💡 <span className="text-crimson-500 font-semibold">Drag and Drop</span> any project card using the grip handle <GripVertical className="w-3.5 h-3.5 inline text-crimson-500" /> to change its display order on the main portfolio page!
+            </p>
+
+            <Reorder.Group
+              axis="y"
+              values={formData.projects}
+              onReorder={handleReorderProjects}
+              className="space-y-4"
+            >
               {formData.projects.map((proj, idx) => (
-                <div key={proj.id} className="p-5 rounded-xl glass-card border border-white/10 flex flex-col justify-between gap-3 relative group">
+                <Reorder.Item
+                  key={proj.id}
+                  value={proj}
+                  className="p-5 rounded-xl glass-card border border-white/10 hover:border-crimson-500/50 flex flex-col justify-between gap-3 relative group bg-[#120708]/90 cursor-grab active:cursor-grabbing select-none"
+                >
                   <div>
                     <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded bg-white/10 text-gray-300 text-[10px] font-code font-bold">
-                          #{idx + 1}
-                        </span>
-                        <span className="px-2 py-0.5 rounded bg-crimson-500/20 text-crimson-500 text-[10px] font-code font-bold">
-                          {proj.category}
-                        </span>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 group-hover:text-crimson-500 transition-colors">
+                          <GripVertical className="w-5 h-5" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded bg-white/10 text-gray-300 text-[10px] font-code font-bold">
+                            #{idx + 1}
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-crimson-500/20 text-crimson-500 text-[10px] font-code font-bold">
+                            {proj.category}
+                          </span>
+                        </div>
                       </div>
                       <span className="text-[10px] font-code text-gray-400">⚡ {proj.metrics}</span>
                     </div>
-                    <h4 className="font-bebas text-2xl text-white mt-1">{proj.title}</h4>
-                    <p className="text-gray-300 text-xs line-clamp-2">{proj.description}</p>
+
+                    <h4 className="font-bebas text-2xl text-white mt-2 pl-10">{proj.title}</h4>
+                    <p className="text-gray-300 text-xs line-clamp-2 pl-10 mt-1">{proj.description}</p>
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/10 pl-10">
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => handleMoveProject(idx, 'up')}
+                        onClick={(e) => { e.stopPropagation(); handleMoveProject(idx, 'up'); }}
                         disabled={idx === 0}
                         className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-all ${
                           idx === 0
                             ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed'
                             : 'bg-white/5 border-white/10 hover:bg-crimson-500/20 hover:border-crimson-500/50 text-gray-300 hover:text-white'
                         }`}
-                        title="Move Up in Main Page Order"
+                        title="Move Up"
                       >
                         <ArrowUp className="w-3.5 h-3.5" />
                         <span className="text-[10px] hidden sm:inline">Up</span>
                       </button>
 
                       <button
-                        onClick={() => handleMoveProject(idx, 'down')}
+                        onClick={(e) => { e.stopPropagation(); handleMoveProject(idx, 'down'); }}
                         disabled={idx === formData.projects.length - 1}
                         className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-all ${
                           idx === formData.projects.length - 1
                             ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed'
                             : 'bg-white/5 border-white/10 hover:bg-crimson-500/20 hover:border-crimson-500/50 text-gray-300 hover:text-white'
                         }`}
-                        title="Move Down in Main Page Order"
+                        title="Move Down"
                       >
                         <ArrowDown className="w-3.5 h-3.5" />
                         <span className="text-[10px] hidden sm:inline">Down</span>
@@ -673,7 +710,8 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
 
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setEditingProject(proj);
                           setIsAddingProject(false);
                         }}
@@ -684,7 +722,7 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                       </button>
 
                       <button
-                        onClick={() => handleDeleteProject(proj.id)}
+                        onClick={(e) => { e.stopPropagation(); handleDeleteProject(proj.id); }}
                         className="p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs flex items-center gap-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -692,9 +730,9 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                       </button>
                     </div>
                   </div>
-                </div>
+                </Reorder.Item>
               ))}
-            </div>
+            </Reorder.Group>
           </div>
         )}
 
@@ -723,58 +761,69 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
             </div>
 
             {/* List of Certificates */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p className="text-xs font-code text-gray-400">
+              💡 <span className="text-crimson-500 font-semibold">Drag and Drop</span> any certificate using the grip handle <GripVertical className="w-3.5 h-3.5 inline text-crimson-500" /> to change its order!
+            </p>
+
+            <Reorder.Group
+              axis="y"
+              values={formData.certificates || []}
+              onReorder={handleReorderCertificates}
+              className="space-y-4"
+            >
               {(formData.certificates || []).map((cert, idx) => (
-                <div key={cert.id} className="p-4 rounded-xl glass-card border border-white/10 flex flex-col justify-between gap-3">
+                <Reorder.Item
+                  key={cert.id}
+                  value={cert}
+                  className="p-4 rounded-xl glass-card border border-white/10 flex flex-col justify-between gap-3 bg-[#120708]/90 cursor-grab active:cursor-grabbing select-none"
+                >
                   <div className="space-y-2">
-                    {/* Certificate Thumbnail Preview */}
-                    <div className="w-full h-28 bg-black/60 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center">
-                      <img
-                        src={cert.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop"}
-                        alt={cert.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded bg-white/10 text-gray-300 text-[10px] font-code font-bold">
-                          #{idx + 1}
-                        </span>
-                        <span className="px-2 py-0.5 rounded bg-crimson-500/20 text-crimson-500 text-[10px] font-code font-bold">
-                          {cert.badge}
-                        </span>
+                      <div className="flex items-center gap-3">
+                        <div className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 group-hover:text-crimson-500 transition-colors">
+                          <GripVertical className="w-4 h-4" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded bg-white/10 text-gray-300 text-[10px] font-code font-bold">
+                            #{idx + 1}
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-crimson-500/20 text-crimson-500 text-[10px] font-code font-bold">
+                            {cert.badge}
+                          </span>
+                        </div>
                       </div>
                       <span className="text-[10px] font-code text-gray-400">{cert.date}</span>
                     </div>
-                    <h4 className="font-bebas text-xl text-white leading-tight">{cert.title}</h4>
-                    <p className="text-crimson-500 text-xs font-semibold">{cert.issuer}</p>
+
+                    <h4 className="font-bebas text-xl text-white leading-tight pl-9">{cert.title}</h4>
+                    <p className="text-crimson-500 text-xs font-semibold pl-9">{cert.issuer}</p>
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/10 pl-9">
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => handleMoveCertificate(idx, 'up')}
+                        onClick={(e) => { e.stopPropagation(); handleMoveCertificate(idx, 'up'); }}
                         disabled={idx === 0}
                         className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-all ${
                           idx === 0
                             ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed'
                             : 'bg-white/5 border-white/10 hover:bg-crimson-500/20 hover:border-crimson-500/50 text-gray-300 hover:text-white'
                         }`}
-                        title="Move Up in Main Page Order"
+                        title="Move Up"
                       >
                         <ArrowUp className="w-3.5 h-3.5" />
                         <span className="text-[10px] hidden sm:inline">Up</span>
                       </button>
 
                       <button
-                        onClick={() => handleMoveCertificate(idx, 'down')}
+                        onClick={(e) => { e.stopPropagation(); handleMoveCertificate(idx, 'down'); }}
                         disabled={idx === (formData.certificates || []).length - 1}
                         className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-all ${
                           idx === (formData.certificates || []).length - 1
                             ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed'
                             : 'bg-white/5 border-white/10 hover:bg-crimson-500/20 hover:border-crimson-500/50 text-gray-300 hover:text-white'
                         }`}
-                        title="Move Down in Main Page Order"
+                        title="Move Down"
                       >
                         <ArrowDown className="w-3.5 h-3.5" />
                         <span className="text-[10px] hidden sm:inline">Down</span>
@@ -783,7 +832,8 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
 
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setEditingCert(cert);
                           setIsAddingCert(false);
                         }}
@@ -794,7 +844,7 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                       </button>
 
                       <button
-                        onClick={() => handleDeleteCertificate(cert.id)}
+                        onClick={(e) => { e.stopPropagation(); handleDeleteCertificate(cert.id); }}
                         className="p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs flex items-center gap-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -802,9 +852,9 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                       </button>
                     </div>
                   </div>
-                </div>
+                </Reorder.Item>
               ))}
-            </div>
+            </Reorder.Group>
           </div>
         )}
 
