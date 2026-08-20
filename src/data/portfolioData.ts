@@ -26,6 +26,7 @@ export interface Certificate {
   badge: string;
   skillsCovered: string[];
   imageUrl?: string;
+  pdfUrl?: string;
 }
 
 export interface SkillItem {

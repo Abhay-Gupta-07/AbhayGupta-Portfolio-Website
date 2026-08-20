@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, Reorder } from 'framer-motion';
-import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings, GripVertical } from 'lucide-react';
+import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings, GripVertical, FileCheck } from 'lucide-react';
 import type { PortfolioData, Project, Certificate } from '../data/portfolioData';
 import { getFirebaseConfig, saveFirebaseConfig, testDBConnection, savePortfolioDataToDB, fetchPortfolioDataFromDB, ensureValidPortfolioData } from '../services/db';
 
@@ -1434,20 +1434,28 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                   />
                 </div>
 
-                {/* Certificate Image Upload & Live Preview */}
+                {/* Certificate Image or PDF Document Upload & Live Preview */}
                 <div>
                   <label className="text-xs font-code text-gray-400 flex items-center justify-between mb-1">
-                    <span>Certificate Image Upload / URL</span>
-                    <span className="text-[10px] text-crimson-400">PNG, JPG, WebP supported</span>
+                    <span>Certificate Image / PDF Document Upload or Link</span>
+                    <span className="text-[10px] text-crimson-400">PDF, PNG, JPG, WebP supported</span>
                   </label>
 
                   <div className="space-y-2">
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        placeholder="Paste image URL or click Upload File..."
-                        value={editingCert.imageUrl || ''}
-                        onChange={(e) => setEditingCert({ ...editingCert, imageUrl: e.target.value })}
+                        placeholder="Paste PDF link, Image URL or click Upload File..."
+                        value={editingCert.imageUrl || editingCert.pdfUrl || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const isPdf = val.toLowerCase().includes('.pdf') || val.startsWith('data:application/pdf');
+                          setEditingCert({
+                            ...editingCert,
+                            imageUrl: val,
+                            pdfUrl: isPdf ? val : editingCert.pdfUrl
+                          });
+                        }}
                         className="flex-1 px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
                       />
                       <label className="px-4 py-2 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-xs font-bold text-white flex items-center gap-1.5 cursor-pointer shrink-0 transition-colors shadow-md">
@@ -1455,14 +1463,20 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                         <span>Upload File</span>
                         <input
                           type="file"
-                          accept="image/*"
+                          accept="image/*,.pdf,application/pdf"
                           className="hidden"
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
                               const reader = new FileReader();
                               reader.onloadend = () => {
-                                setEditingCert({ ...editingCert, imageUrl: reader.result as string });
+                                const resultStr = reader.result as string;
+                                const isPdf = file.type === 'application/pdf' || file.name.endsWith('.pdf');
+                                setEditingCert({
+                                  ...editingCert,
+                                  imageUrl: resultStr,
+                                  pdfUrl: isPdf ? resultStr : editingCert.pdfUrl
+                                });
                               };
                               reader.readAsDataURL(file);
                             }
@@ -1472,13 +1486,24 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                     </div>
 
                     {/* Live Preview Thumbnail */}
-                    {editingCert.imageUrl && (
-                      <div className="w-full h-36 bg-black/80 rounded-xl border border-crimson-500/40 overflow-hidden flex items-center justify-center relative">
-                        <img
-                          src={editingCert.imageUrl}
-                          alt="Certificate Preview"
-                          className="w-full h-full object-contain"
-                        />
+                    {(editingCert.imageUrl || editingCert.pdfUrl) && (
+                      <div className="w-full h-36 bg-black/80 rounded-xl border border-crimson-500/40 overflow-hidden flex flex-col items-center justify-center p-3 text-center relative">
+                        {editingCert.pdfUrl || (editingCert.imageUrl && editingCert.imageUrl.toLowerCase().includes('.pdf')) || editingCert.imageUrl?.startsWith('data:application/pdf') ? (
+                          <div className="space-y-2">
+                            <div className="w-10 h-10 rounded-xl bg-crimson-500/20 border border-crimson-500/40 text-crimson-500 flex items-center justify-center mx-auto">
+                              <FileCheck className="w-5 h-5" />
+                            </div>
+                            <span className="text-xs font-code text-crimson-400 font-bold block">
+                              📄 VERIFIED PDF DOCUMENT LOADED
+                            </span>
+                          </div>
+                        ) : (
+                          <img
+                            src={editingCert.imageUrl}
+                            alt="Certificate Preview"
+                            className="w-full h-full object-contain"
+                          />
+                        )}
                       </div>
                     )}
                   </div>
