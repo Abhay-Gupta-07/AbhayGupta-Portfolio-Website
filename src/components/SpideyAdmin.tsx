@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, Reorder } from 'framer-motion';
-import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings, GripVertical, FileCheck } from 'lucide-react';
+import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings, GripVertical, FileCheck, Copy } from 'lucide-react';
 import type { PortfolioData, Project, Certificate } from '../data/portfolioData';
 import { getFirebaseConfig, saveFirebaseConfig, testDBConnection, savePortfolioDataToDB, fetchPortfolioDataFromDB, ensureValidPortfolioData } from '../services/db';
 
@@ -356,6 +356,12 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     downloadAnchor.remove();
   };
 
+  const handleCopyTSCode = () => {
+    const jsonStr = JSON.stringify(formData, null, 2);
+    navigator.clipboard.writeText(jsonStr);
+    alert('✅ Portfolio JSON Data copied to clipboard! You can paste it to the assistant or import it on any device to make all your uploaded projects & certificates global worldwide.');
+  };
+
   const handleImportJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
     if (e.target.files && e.target.files[0]) {
@@ -510,10 +516,19 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
             <button
               onClick={handleExportJSON}
               className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-gray-300 hover:text-white flex items-center gap-2"
-              title="Export Portfolio Backup JSON to transfer to other devices"
+              title="Export Portfolio Backup JSON file"
             >
               <Download className="w-4 h-4 text-teal-400" />
               Export JSON
+            </button>
+
+            <button
+              onClick={handleCopyTSCode}
+              className="px-4 py-2.5 rounded-xl bg-crimson-500/20 hover:bg-crimson-500/30 border border-crimson-500/40 text-xs font-semibold text-crimson-300 hover:text-white flex items-center gap-2"
+              title="Copy portfolio JSON to clipboard to commit directly into source code"
+            >
+              <Copy className="w-4 h-4 text-crimson-400" />
+              Copy Data JSON
             </button>
 
             <label
