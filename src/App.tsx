@@ -144,7 +144,11 @@ export const App: React.FC = () => {
       <HeroCanvas totalFrames={192} />
 
       {/* 3. Floating Glass Pill Navbar */}
-      <Navbar data={portfolioData.personal} activeSection={activeSection} />
+      <Navbar
+        data={portfolioData.personal}
+        activeSection={activeSection}
+        onOpenAdmin={() => setIsAdminOpen(true)}
+      />
 
       {/* 4. Page Content Sections */}
       <main className="relative z-10 space-y-12 pb-24">
@@ -171,7 +175,10 @@ export const App: React.FC = () => {
       </main>
 
       {/* 5. macOS Glass Dock with Vector Icons & Spidey Admin link */}
-      <MacOSDock data={portfolioData.personal} />
+      <MacOSDock
+        data={portfolioData.personal}
+        onOpenAdmin={() => setIsAdminOpen(true)}
+      />
 
       {/* Footer Branding */}
       <footer className="relative z-10 py-6 border-t border-crimson-500/20 text-center text-xs font-code text-gray-400 bg-[#0a0404]/90">

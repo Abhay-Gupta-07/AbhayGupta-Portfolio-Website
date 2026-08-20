@@ -5,9 +5,10 @@ import type { PersonalInfo } from '../data/portfolioData';
 
 interface MacOSDockProps {
   data: PersonalInfo;
+  onOpenAdmin?: () => void;
 }
 
-export const MacOSDock: React.FC<MacOSDockProps> = ({ data }) => {
+export const MacOSDock: React.FC<MacOSDockProps> = ({ data, onOpenAdmin }) => {
   const mouseX = useMotionValue(Infinity);
 
   const handleDownloadCV = () => {
@@ -17,6 +18,16 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ data }) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleOpenAdmin = () => {
+    if (onOpenAdmin) {
+      onOpenAdmin();
+    } else {
+      const url = new URL(window.location.href);
+      url.searchParams.set('admin', 'true');
+      window.history.pushState({}, '', url.toString());
+    }
   };
 
   const dockItems = [
@@ -71,8 +82,8 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ data }) => {
       id: 'spidey',
       label: 'Spidey Admin',
       icon: <ShieldAlert className="w-5 h-5 text-crimson-500" />,
-      href: '/spidey.html',
-      external: true,
+      onClick: handleOpenAdmin,
+      external: false,
       highlight: true
     }
   ];

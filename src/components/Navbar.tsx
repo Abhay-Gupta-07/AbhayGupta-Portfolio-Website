@@ -6,9 +6,10 @@ import type { PersonalInfo } from '../data/portfolioData';
 interface NavbarProps {
   data: PersonalInfo;
   activeSection: string;
+  onOpenAdmin?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ data, activeSection }) => {
+export const Navbar: React.FC<NavbarProps> = ({ data, activeSection, onOpenAdmin }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -36,6 +37,17 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection }) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleOpenAdmin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onOpenAdmin) {
+      onOpenAdmin();
+    } else {
+      const url = new URL(window.location.href);
+      url.searchParams.set('admin', 'true');
+      window.history.pushState({}, '', url.toString());
+    }
   };
 
   return (
@@ -95,9 +107,8 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection }) => {
           </button>
 
           <a
-            href="/spidey.html"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="?admin=true"
+            onClick={handleOpenAdmin}
             title="Spidey Admin Panel"
             className="p-1.5 rounded-full bg-white/5 hover:bg-crimson-500/20 border border-white/10 hover:border-crimson-500/50 text-crimson-500 transition-all"
           >
