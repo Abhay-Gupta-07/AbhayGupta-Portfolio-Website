@@ -507,6 +507,29 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
               Save All Changes
             </button>
 
+            <button
+              onClick={handleExportJSON}
+              className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-gray-300 hover:text-white flex items-center gap-2"
+              title="Export Portfolio Backup JSON to transfer to other devices"
+            >
+              <Download className="w-4 h-4 text-teal-400" />
+              Export JSON
+            </button>
+
+            <label
+              className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-gray-300 hover:text-white flex items-center gap-2 cursor-pointer"
+              title="Import Portfolio Backup JSON from another device"
+            >
+              <Upload className="w-4 h-4 text-amber-400" />
+              Import JSON
+              <input
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={handleImportJSON}
+              />
+            </label>
+
             {onClose && (
               <button
                 onClick={handleSaveAndClose}
