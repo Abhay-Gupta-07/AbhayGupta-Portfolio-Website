@@ -12,11 +12,12 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeModalProject, setActiveModalProject] = useState<Project | null>(null);
 
+  const safeProjects = Array.isArray(projects) ? projects : [];
   const categories = ['All', 'Full Stack', 'AI & Vision', 'Robotics / IoT', 'Mobile'];
 
   const filteredProjects = selectedCategory === 'All'
-    ? projects
-    : projects.filter((p) => p.category === selectedCategory);
+    ? safeProjects
+    : safeProjects.filter((p) => p.category === selectedCategory);
 
   return (
     <section id="projects" className="py-24 px-4 max-w-7xl mx-auto">

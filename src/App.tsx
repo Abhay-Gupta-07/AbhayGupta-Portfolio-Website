@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { initialPortfolioData } from './data/portfolioData';
 import type { PortfolioData } from './data/portfolioData';
-import { fetchPortfolioDataFromDB, savePortfolioDataToDB } from './services/db';
+import { fetchPortfolioDataFromDB, savePortfolioDataToDB, subscribeToDataSync, ensureValidPortfolioData } from './services/db';
 import { HeroCanvas } from './components/HeroCanvas';
 import { CustomCursor } from './components/CustomCursor';
 import { Navbar } from './components/Navbar';
@@ -21,10 +21,7 @@ export const App: React.FC = () => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed?.personal) {
-          parsed.personal.email = 'abbaabhayyy@gmail.com';
-        }
-        return parsed;
+        return ensureValidPortfolioData(parsed);
       } catch (err) {
         console.error('Error loading saved portfolio data:', err);
       }
@@ -40,9 +37,6 @@ export const App: React.FC = () => {
     let isMounted = true;
     fetchPortfolioDataFromDB().then((res) => {
       if (isMounted && res.data) {
-        if (res.data.personal) {
-          res.data.personal.email = 'abbaabhayyy@gmail.com';
-        }
         setPortfolioData(res.data);
       }
     });
@@ -51,13 +45,23 @@ export const App: React.FC = () => {
     };
   }, []);
 
-  // Cross-tab synchronization via localStorage events
+  // Real-time BroadcastChannel multi-tab synchronization
+  useEffect(() => {
+    const unsubscribe = subscribeToDataSync((newData) => {
+      setPortfolioData(newData);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // Fallback cross-tab synchronization via localStorage events
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'abhay_portfolio_data_v1' && e.newValue) {
         try {
           const parsed = JSON.parse(e.newValue);
-          setPortfolioData(parsed);
+          setPortfolioData(ensureValidPortfolioData(parsed));
         } catch (err) {
           console.error('Error loading synced portfolio data:', err);
         }
@@ -99,8 +103,9 @@ export const App: React.FC = () => {
   }, []);
 
   const handleSavePortfolioData = (newData: PortfolioData) => {
-    setPortfolioData(newData);
-    savePortfolioDataToDB(newData);
+    const validated = ensureValidPortfolioData(newData);
+    setPortfolioData(validated);
+    savePortfolioDataToDB(validated);
   };
 
   const handleResetPortfolioData = () => {

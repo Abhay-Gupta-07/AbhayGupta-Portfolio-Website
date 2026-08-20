@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings } from 'lucide-react';
 import type { PortfolioData, Project, Certificate } from '../data/portfolioData';
-import { getFirebaseConfig, saveFirebaseConfig, testDBConnection, savePortfolioDataToDB, fetchPortfolioDataFromDB } from '../services/db';
+import { getFirebaseConfig, saveFirebaseConfig, testDBConnection, savePortfolioDataToDB, fetchPortfolioDataFromDB, ensureValidPortfolioData } from '../services/db';
 
 interface SpideyAdminProps {
   data: PortfolioData;
@@ -22,10 +22,10 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
 
   // Admin Data & Tabs State
-  const [formData, setFormData] = useState<PortfolioData>(data);
+  const [formData, setFormData] = useState<PortfolioData>(() => ensureValidPortfolioData(data));
 
   useEffect(() => {
-    setFormData(data);
+    setFormData(ensureValidPortfolioData(data));
   }, [data]);
   const [activeTab, setActiveTab] = useState<'profile' | 'projects' | 'certificates' | 'skills' | 'socials' | 'inbox' | 'database'>('projects');
 
@@ -77,36 +77,42 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
   };
 
   const handlePersonalChange = (field: keyof PortfolioData['personal'], value: any) => {
-    setFormData((prev) => ({
-      ...prev,
+    const updated = ensureValidPortfolioData({
+      ...formData,
       personal: {
-        ...prev.personal,
+        ...formData.personal,
         [field]: value,
       },
-    }));
+    });
+    setFormData(updated);
+    onSave(updated);
   };
 
   const handleSocialChange = (network: keyof PortfolioData['personal']['socials'], value: string) => {
-    setFormData((prev) => ({
-      ...prev,
+    const updated = ensureValidPortfolioData({
+      ...formData,
       personal: {
-        ...prev.personal,
+        ...formData.personal,
         socials: {
-          ...prev.personal.socials,
+          ...formData.personal.socials,
           [network]: value,
         },
       },
-    }));
+    });
+    setFormData(updated);
+    onSave(updated);
   };
 
   const handleSave = () => {
-    onSave(formData);
+    const validated = ensureValidPortfolioData(formData);
+    onSave(validated);
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);
   };
 
   const handleSaveAndClose = () => {
-    onSave(formData);
+    const validated = ensureValidPortfolioData(formData);
+    onSave(validated);
     setSavedSuccess(true);
     if (onClose) {
       setTimeout(() => {
