@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { initialPortfolioData } from './data/portfolioData';
 import type { PortfolioData } from './data/portfolioData';
+import { fetchPortfolioDataFromDB, savePortfolioDataToDB } from './services/db';
 import { HeroCanvas } from './components/HeroCanvas';
 import { CustomCursor } from './components/CustomCursor';
 import { Navbar } from './components/Navbar';
@@ -33,6 +34,22 @@ export const App: React.FC = () => {
 
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
+
+  // Hydrate portfolio data from Cloud Database on mount
+  useEffect(() => {
+    let isMounted = true;
+    fetchPortfolioDataFromDB().then((res) => {
+      if (isMounted && res.data) {
+        if (res.data.personal) {
+          res.data.personal.email = 'abbaabhayyy@gmail.com';
+        }
+        setPortfolioData(res.data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Cross-tab synchronization via localStorage events
   useEffect(() => {
@@ -83,13 +100,13 @@ export const App: React.FC = () => {
 
   const handleSavePortfolioData = (newData: PortfolioData) => {
     setPortfolioData(newData);
-    localStorage.setItem('abhay_portfolio_data_v1', JSON.stringify(newData));
+    savePortfolioDataToDB(newData);
   };
 
   const handleResetPortfolioData = () => {
     if (confirm('Are you sure you want to reset all portfolio data to default?')) {
       setPortfolioData(initialPortfolioData);
-      localStorage.removeItem('abhay_portfolio_data_v1');
+      savePortfolioDataToDB(initialPortfolioData);
     }
   };
 

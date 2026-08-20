@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send } from 'lucide-react';
+import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings } from 'lucide-react';
 import type { PortfolioData, Project, Certificate } from '../data/portfolioData';
+import { getFirebaseConfig, saveFirebaseConfig, testDBConnection, savePortfolioDataToDB, fetchPortfolioDataFromDB } from '../services/db';
 
 interface SpideyAdminProps {
   data: PortfolioData;
@@ -26,7 +27,13 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
   useEffect(() => {
     setFormData(data);
   }, [data]);
-  const [activeTab, setActiveTab] = useState<'profile' | 'projects' | 'certificates' | 'skills' | 'socials' | 'inbox'>('projects');
+  const [activeTab, setActiveTab] = useState<'profile' | 'projects' | 'certificates' | 'skills' | 'socials' | 'inbox' | 'database'>('projects');
+
+  // Cloud Database state
+  const [dbConfig, setDbConfig] = useState(getFirebaseConfig);
+  const [dbStatusMsg, setDbStatusMsg] = useState<{ success?: boolean; text?: string } | null>(null);
+  const [isSyncingDB, setIsSyncingDB] = useState(false);
+
   const [inboxMessages, setInboxMessages] = useState<any[]>(() => {
     try {
       return JSON.parse(localStorage.getItem('spidey_admin_messages_v1') || '[]');
@@ -112,6 +119,82 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     onSave(formData);
     if (onClose) {
       onClose();
+    }
+  };
+
+  /* Project & Certificate Reordering Handlers */
+  const handleMoveProject = (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= formData.projects.length) return;
+    const updatedProjects = [...formData.projects];
+    const temp = updatedProjects[index];
+    updatedProjects[index] = updatedProjects[targetIndex];
+    updatedProjects[targetIndex] = temp;
+    const updatedFormData = { ...formData, projects: updatedProjects };
+    setFormData(updatedFormData);
+    onSave(updatedFormData);
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2000);
+  };
+
+  const handleMoveCertificate = (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= (formData.certificates || []).length) return;
+    const updatedCerts = [...(formData.certificates || [])];
+    const temp = updatedCerts[index];
+    updatedCerts[index] = updatedCerts[targetIndex];
+    updatedCerts[targetIndex] = temp;
+    const updatedFormData = { ...formData, certificates: updatedCerts };
+    setFormData(updatedFormData);
+    onSave(updatedFormData);
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2000);
+  };
+
+  /* Database Handlers */
+  const handleSaveDBConfig = () => {
+    saveFirebaseConfig(dbConfig);
+    setDbStatusMsg({ success: true, text: 'Firebase Configuration Saved!' });
+    setTimeout(() => setDbStatusMsg(null), 3000);
+  };
+
+  const handleTestDBConnection = async () => {
+    setDbStatusMsg({ text: 'Testing Cloud Database Connection...' });
+    const result = await testDBConnection(dbConfig);
+    setDbStatusMsg({ success: result.success, text: result.message });
+  };
+
+  const handleForceDBSync = async () => {
+    setIsSyncingDB(true);
+    setDbStatusMsg({ text: 'Syncing Portfolio Data to Cloud Database...' });
+    const result = await savePortfolioDataToDB(formData);
+    setIsSyncingDB(false);
+    if (result.success) {
+      setSavedSuccess(true);
+      setDbStatusMsg({
+        success: true,
+        text: `Data successfully saved to ${result.source === 'firestore' ? 'Firebase Firestore Cloud Database' : 'LocalStorage Cache'}!`,
+      });
+    } else {
+      setDbStatusMsg({ success: false, text: result.error || 'Database sync failed.' });
+    }
+  };
+
+  const handleForceDBFetch = async () => {
+    setIsSyncingDB(true);
+    setDbStatusMsg({ text: 'Fetching latest data from Cloud Database...' });
+    const result = await fetchPortfolioDataFromDB();
+    setIsSyncingDB(false);
+    if (result.data) {
+      setFormData(result.data);
+      onSave(result.data);
+      setSavedSuccess(true);
+      setDbStatusMsg({
+        success: true,
+        text: `Successfully loaded data from ${result.source === 'firestore' ? 'Firebase Firestore Cloud Database' : 'LocalStorage Cache'}!`,
+      });
+    } else {
+      setDbStatusMsg({ success: false, text: 'No saved Cloud Database record found.' });
     }
   };
 
@@ -489,8 +572,20 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                 : 'bg-white/5 text-gray-400 hover:text-white'
             }`}
           >
-            <Mail className="w-4 h-4 text-crimson-400" />
-            Inbox Messages ({inboxMessages.length})
+            <Mail className="w-4 h-4" />
+            Received Messages ({inboxMessages.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('database')}
+            className={`px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
+              activeTab === 'database'
+                ? 'bg-crimson-500 text-white shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+                : 'bg-white/5 text-gray-400 hover:text-white'
+            }`}
+          >
+            <Database className="w-4 h-4" />
+            Cloud Database Sync
           </button>
         </div>
 
@@ -521,38 +616,75 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
 
             {/* List of Existing Projects */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {formData.projects.map((proj) => (
-                <div key={proj.id} className="p-5 rounded-xl glass-card border border-white/10 flex flex-col justify-between gap-3">
+              {formData.projects.map((proj, idx) => (
+                <div key={proj.id} className="p-5 rounded-xl glass-card border border-white/10 flex flex-col justify-between gap-3 relative group">
                   <div>
-                    <div className="flex items-center justify-between">
-                      <span className="px-2 py-0.5 rounded bg-crimson-500/20 text-crimson-500 text-[10px] font-code font-bold">
-                        {proj.category}
-                      </span>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded bg-white/10 text-gray-300 text-[10px] font-code font-bold">
+                          #{idx + 1}
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-crimson-500/20 text-crimson-500 text-[10px] font-code font-bold">
+                          {proj.category}
+                        </span>
+                      </div>
                       <span className="text-[10px] font-code text-gray-400">⚡ {proj.metrics}</span>
                     </div>
                     <h4 className="font-bebas text-2xl text-white mt-1">{proj.title}</h4>
                     <p className="text-gray-300 text-xs line-clamp-2">{proj.description}</p>
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
-                    <button
-                      onClick={() => {
-                        setEditingProject(proj);
-                        setIsAddingProject(false);
-                      }}
-                      className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-xs flex items-center gap-1"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                      Edit
-                    </button>
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleMoveProject(idx, 'up')}
+                        disabled={idx === 0}
+                        className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-all ${
+                          idx === 0
+                            ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed'
+                            : 'bg-white/5 border-white/10 hover:bg-crimson-500/20 hover:border-crimson-500/50 text-gray-300 hover:text-white'
+                        }`}
+                        title="Move Up in Main Page Order"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                        <span className="text-[10px] hidden sm:inline">Up</span>
+                      </button>
 
-                    <button
-                      onClick={() => handleDeleteProject(proj.id)}
-                      className="p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs flex items-center gap-1"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      Delete
-                    </button>
+                      <button
+                        onClick={() => handleMoveProject(idx, 'down')}
+                        disabled={idx === formData.projects.length - 1}
+                        className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-all ${
+                          idx === formData.projects.length - 1
+                            ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed'
+                            : 'bg-white/5 border-white/10 hover:bg-crimson-500/20 hover:border-crimson-500/50 text-gray-300 hover:text-white'
+                        }`}
+                        title="Move Down in Main Page Order"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                        <span className="text-[10px] hidden sm:inline">Down</span>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingProject(proj);
+                          setIsAddingProject(false);
+                        }}
+                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-xs flex items-center gap-1"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteProject(proj.id)}
+                        className="p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -586,7 +718,7 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
 
             {/* List of Certificates */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {(formData.certificates || []).map((cert) => (
+              {(formData.certificates || []).map((cert, idx) => (
                 <div key={cert.id} className="p-4 rounded-xl glass-card border border-white/10 flex flex-col justify-between gap-3">
                   <div className="space-y-2">
                     {/* Certificate Thumbnail Preview */}
@@ -598,34 +730,71 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="px-2 py-0.5 rounded bg-crimson-500/20 text-crimson-500 text-[10px] font-code font-bold">
-                        {cert.badge}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded bg-white/10 text-gray-300 text-[10px] font-code font-bold">
+                          #{idx + 1}
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-crimson-500/20 text-crimson-500 text-[10px] font-code font-bold">
+                          {cert.badge}
+                        </span>
+                      </div>
                       <span className="text-[10px] font-code text-gray-400">{cert.date}</span>
                     </div>
                     <h4 className="font-bebas text-xl text-white leading-tight">{cert.title}</h4>
                     <p className="text-crimson-500 text-xs font-semibold">{cert.issuer}</p>
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
-                    <button
-                      onClick={() => {
-                        setEditingCert(cert);
-                        setIsAddingCert(false);
-                      }}
-                      className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-xs flex items-center gap-1"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                      Edit
-                    </button>
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleMoveCertificate(idx, 'up')}
+                        disabled={idx === 0}
+                        className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-all ${
+                          idx === 0
+                            ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed'
+                            : 'bg-white/5 border-white/10 hover:bg-crimson-500/20 hover:border-crimson-500/50 text-gray-300 hover:text-white'
+                        }`}
+                        title="Move Up in Main Page Order"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                        <span className="text-[10px] hidden sm:inline">Up</span>
+                      </button>
 
-                    <button
-                      onClick={() => handleDeleteCertificate(cert.id)}
-                      className="p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs flex items-center gap-1"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      Delete
-                    </button>
+                      <button
+                        onClick={() => handleMoveCertificate(idx, 'down')}
+                        disabled={idx === (formData.certificates || []).length - 1}
+                        className={`p-1.5 rounded-lg border text-xs flex items-center gap-1 transition-all ${
+                          idx === (formData.certificates || []).length - 1
+                            ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed'
+                            : 'bg-white/5 border-white/10 hover:bg-crimson-500/20 hover:border-crimson-500/50 text-gray-300 hover:text-white'
+                        }`}
+                        title="Move Down in Main Page Order"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                        <span className="text-[10px] hidden sm:inline">Down</span>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingCert(cert);
+                          setIsAddingCert(false);
+                        }}
+                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-xs flex items-center gap-1"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteCertificate(cert.id)}
+                        className="p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -795,6 +964,141 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 7: CLOUD DATABASE PERSISTENCE */}
+        {activeTab === 'database' && (
+          <div className="space-y-6 max-w-4xl">
+            <div className="p-6 rounded-2xl glass-card-crimson border border-crimson-500/30 space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <h3 className="font-bebas text-3xl text-white tracking-wide flex items-center gap-3">
+                    <Database className="w-7 h-7 text-crimson-500" />
+                    PERSISTENT CLOUD DATABASE CONFIGURATION
+                  </h3>
+                  <p className="text-xs font-code text-gray-400 mt-1">
+                    // Sync your Spidey Admin portfolio changes to Firebase Firestore so updates persist across builds, deployments & devices.
+                  </p>
+                </div>
+
+                {dbConfig.projectId ? (
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-code font-bold flex items-center gap-1.5">
+                    <CloudCheck className="w-4 h-4" />
+                    CONNECTED: {dbConfig.projectId}
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 text-xs font-code font-bold">
+                    ⚡ CACHE FALLBACK (LOCALSTORAGE)
+                  </span>
+                )}
+              </div>
+
+              {dbStatusMsg && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-4 rounded-xl text-xs font-semibold text-center border ${
+                    dbStatusMsg.success === true
+                      ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300'
+                      : dbStatusMsg.success === false
+                      ? 'bg-red-950/60 border-red-500/50 text-red-300'
+                      : 'bg-crimson-500/20 border-crimson-500/40 text-crimson-300'
+                  }`}
+                >
+                  {dbStatusMsg.text}
+                </motion.div>
+              )}
+
+              {/* Manual Sync Actions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div className="p-4 rounded-xl bg-black/60 border border-white/10 space-y-3">
+                  <h4 className="font-bebas text-xl text-white flex items-center gap-2">
+                    <CloudUpload className="w-5 h-5 text-crimson-500" />
+                    Push Data to Cloud Database
+                  </h4>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    Immediately sync all current portfolio state (ordered projects, certificates, profile bio, skills) to your Firebase Firestore cloud database.
+                  </p>
+                  <button
+                    onClick={handleForceDBSync}
+                    disabled={isSyncingDB}
+                    className="w-full py-2.5 rounded-xl bg-crimson-500 hover:bg-crimson-600 font-semibold text-xs text-white flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                  >
+                    <CloudUpload className="w-4 h-4" />
+                    {isSyncingDB ? 'Syncing...' : 'Sync Current Data to Database'}
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-xl bg-black/60 border border-white/10 space-y-3">
+                  <h4 className="font-bebas text-xl text-white flex items-center gap-2">
+                    <CloudDownload className="w-5 h-5 text-teal-400" />
+                    Fetch Data from Cloud Database
+                  </h4>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    Pull the latest saved portfolio document from your cloud database into Spidey Admin and main page.
+                  </p>
+                  <button
+                    onClick={handleForceDBFetch}
+                    disabled={isSyncingDB}
+                    className="w-full py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 font-semibold text-xs text-white flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                  >
+                    <CloudDownload className="w-4 h-4" />
+                    {isSyncingDB ? 'Fetching...' : 'Fetch Latest Cloud Data'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Credentials Config Form */}
+              <div className="border-t border-white/10 pt-6 space-y-4">
+                <h4 className="font-bebas text-2xl text-white flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-crimson-500" />
+                  Firebase Project Credentials (Optional Custom Config)
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-code text-gray-400">Firebase Project ID</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. abhay-portfolio-db"
+                      value={dbConfig.projectId || ''}
+                      onChange={(e) => setDbConfig({ ...dbConfig, projectId: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-black/80 border border-white/10 focus:border-crimson-500 focus:outline-none text-xs text-white"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-code text-gray-400">Firebase API Key (Optional)</label>
+                    <input
+                      type="text"
+                      placeholder="AIzaSy..."
+                      value={dbConfig.apiKey || ''}
+                      onChange={(e) => setDbConfig({ ...dbConfig, apiKey: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-black/80 border border-white/10 focus:border-crimson-500 focus:outline-none text-xs text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <button
+                    onClick={handleSaveDBConfig}
+                    className="px-5 py-2.5 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-xs font-semibold text-white flex items-center gap-2 shadow-md"
+                  >
+                    <Save className="w-4 h-4" />
+                    Save Firebase Settings
+                  </button>
+
+                  <button
+                    onClick={handleTestDBConnection}
+                    className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-semibold text-white flex items-center gap-2"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Test Connection
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
