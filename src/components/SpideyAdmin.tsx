@@ -364,6 +364,104 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     }
   };
 
+  const generateTSCode = (dataToExport: PortfolioData): string => {
+    return `export type ProjectCategory = 'Full Stack' | 'AI & Vision' | 'Robotics / IoT' | 'Mobile';
+
+export interface Project {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  longDescription: string;
+  category: ProjectCategory;
+  tags: string[];
+  image: string;
+  liveUrl: string;
+  githubUrl?: string;
+  featured: boolean;
+  metrics: string;
+  features: string[];
+  techStack: string[];
+}
+
+export interface Certificate {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  credentialUrl?: string;
+  badge: string;
+  skillsCovered: string[];
+  imageUrl?: string;
+  pdfUrl?: string;
+}
+
+export interface SkillItem {
+  name: string;
+  level: number;
+  iconName?: string;
+  highlight?: boolean;
+}
+
+export interface SkillCategory {
+  category: string;
+  description: string;
+  skills: SkillItem[];
+}
+
+export interface TimelineItem {
+  id: string;
+  period: string;
+  role: string;
+  organization: string;
+  location: string;
+  description: string;
+  highlights: string[];
+  type: 'education' | 'leadership' | 'experience';
+}
+
+export interface ServiceItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  tags: string[];
+  features: string[];
+}
+
+export interface PersonalInfo {
+  name: string;
+  handle: string;
+  titles: string[];
+  bio: string;
+  longBio: string;
+  education: string;
+  location: string;
+  email: string;
+  socials: {
+    instagram: string;
+    github: string;
+    linkedin: string;
+  };
+  resumeUrl: string;
+  avatarUrl: string;
+  livePortfolioUrl: string;
+  stats: { label: string; value: string }[];
+}
+
+export interface PortfolioData {
+  personal: PersonalInfo;
+  projects: Project[];
+  certificates: Certificate[];
+  skills: SkillCategory[];
+  services: ServiceItem[];
+  timeline: TimelineItem[];
+}
+
+export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport, null, 2)};
+`;
+  };
+
   const handleExportJSON = () => {
     const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
       JSON.stringify(formData, null, 2)
@@ -377,9 +475,23 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
   };
 
   const handleCopyTSCode = () => {
-    const jsonStr = JSON.stringify(formData, null, 2);
-    navigator.clipboard.writeText(jsonStr);
-    alert('✅ Portfolio JSON Data copied to clipboard! You can paste it to the assistant or import it on any device to make all your uploaded projects & certificates global worldwide.');
+    const tsCode = generateTSCode(formData);
+    navigator.clipboard.writeText(tsCode);
+    alert('✅ Portfolio TS Source Code copied to clipboard!\n\nTo make all your projects & certificates global for every visitor online:\n1. Replace content in src/data/portfolioData.ts with copied code\n2. Git push to deploy live!');
+  };
+
+  const handleDownloadTSFile = () => {
+    const tsCode = generateTSCode(formData);
+    const blob = new Blob([tsCode], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'portfolioData.ts';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    alert('✅ portfolioData.ts downloaded!\n\nReplace src/data/portfolioData.ts with this file and git push to update your website globally for everyone!');
   };
 
   const handleImportJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -543,12 +655,21 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
             </button>
 
             <button
-              onClick={handleCopyTSCode}
+              onClick={handleDownloadTSFile}
               className="px-4 py-2.5 rounded-xl bg-crimson-500/20 hover:bg-crimson-500/30 border border-crimson-500/40 text-xs font-semibold text-crimson-300 hover:text-white flex items-center gap-2"
-              title="Copy portfolio JSON to clipboard to commit directly into source code"
+              title="Download portfolioData.ts file to save directly in src/data/ for Vercel deployment"
             >
-              <Copy className="w-4 h-4 text-crimson-400" />
-              Copy Data JSON
+              <Download className="w-4 h-4 text-crimson-400" />
+              Download portfolioData.ts
+            </button>
+
+            <button
+              onClick={handleCopyTSCode}
+              className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-gray-300 hover:text-white flex items-center gap-2"
+              title="Copy portfolio TS source code to clipboard"
+            >
+              <Copy className="w-4 h-4 text-teal-400" />
+              Copy TS Code
             </button>
 
             <label
