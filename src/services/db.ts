@@ -12,10 +12,10 @@ export interface FirebaseConfig {
   appId?: string;
 }
 
-const STORAGE_KEY_DATA = 'abhay_portfolio_data_v1';
+const STORAGE_KEY_DATA = 'abhay_portfolio_data_v2';
 const STORAGE_KEY_CONFIG = 'spidey_admin_firebase_config_v1';
-const BROADCAST_CHANNEL_NAME = 'spidey_portfolio_sync_v1';
-const IDB_NAME = 'AbhayPortfolioDB_v1';
+const BROADCAST_CHANNEL_NAME = 'spidey_portfolio_sync_v2';
+const IDB_NAME = 'AbhayPortfolioDB_v2';
 const IDB_STORE = 'portfolio_store';
 
 let cachedFirestoreDB: any = null;
