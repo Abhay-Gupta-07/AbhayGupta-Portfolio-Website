@@ -26,7 +26,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ timeline }) =>
           CAREER & <span className="text-crimson-500 text-glow">LEADERSHIP TIMELINE</span>
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
-          Tracking academic excellence in Computer Science Engineering, student innovation leadership at IEDC & MEX25, and hands-on robotics training workshops.
+          Journey spanning Intermediate MPC, B.Tech CSE (AI & ML) at MIST, AI engineering internship at Arah Infotech, winning 1st Prize at Technomist 2K25, founding Build Studio, and building real-world AI products.
         </p>
       </div>
 

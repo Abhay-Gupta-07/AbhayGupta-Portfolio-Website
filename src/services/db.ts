@@ -124,7 +124,7 @@ export const ensureValidPortfolioData = (data: any): PortfolioData => {
     ? data.services
     : initialPortfolioData.services;
 
-  const validTimeline = Array.isArray(data.timeline)
+  const validTimeline = Array.isArray(data.timeline) && data.timeline.length >= initialPortfolioData.timeline.length
     ? data.timeline
     : initialPortfolioData.timeline;
 

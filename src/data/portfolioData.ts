@@ -751,60 +751,100 @@ export const initialPortfolioData: PortfolioData = {
   ],
   "timeline": [
     {
-      "id": "education-btech",
-      "period": "2022 - Present",
-      "role": "B.Tech Final Year Computer Science Engineering (AI & ML)",
-      "organization": "Mahaveer Institute of Science and Technology",
+      "id": "timeline-2021-intermediate",
+      "period": "2021 – 2023",
+      "role": "Intermediate (MPC)",
+      "organization": "Sri Vaishnavi Junior College",
       "location": "Hyderabad, Telangana, India",
-      "description": "Specializing in Artificial Intelligence, Machine Learning, Deep Learning, Data Structures, Algorithms, Computer Vision, and Full-Stack Software Engineering.",
+      "description": "Completed MPC at Sri Vaishnavi Junior College, building a strong foundation in mathematics and science.",
       "highlights": [
-        "Specialized stream in AI & Machine Learning",
-        "10+ production AI models and full-stack applications engineered",
-        "Final year capstone engineering project lead"
+        "Completed MPC with distinction",
+        "Built strong mathematical, analytical & science foundation"
       ],
       "type": "education"
     },
     {
-      "id": "experience-arah-infotech",
-      "period": "May 2026 - Aug 2026",
-      "role": "AI / ML Engineer Intern",
-      "organization": "Arah Infotech Pvt Ltd",
-      "location": "Hyderabad, Telangana, India",
-      "description": "Gained hands-on experience in Artificial Intelligence, Machine Learning, Data Analysis, Python Programming, Model Development, and AI-driven solutions.",
+      "id": "timeline-2023-btech",
+      "period": "2023",
+      "role": "Started B.Tech CSE (AI & ML)",
+      "organization": "Mahaveer Institute of Science and Technology (MIST)",
+      "location": "JNTU Hyderabad, Telangana, India",
+      "description": "Joined Mahaveer Institute of Science and Technology (MIST) to pursue B.Tech in Computer Science & Engineering (AI & ML) under JNTU Hyderabad.",
       "highlights": [
-        "Contributed to real-time AI/ML projects and data processing pipelines under technical team guidance",
-        "Engineered predictive machine learning models and data analytics workflows",
-        "Implemented intelligent AI-driven solutions and model optimization techniques"
+        "Specialization stream in Artificial Intelligence & Machine Learning",
+        "Affiliated with Jawaharlal Nehru Technological University Hyderabad (JNTUH)"
+      ],
+      "type": "education"
+    },
+    {
+      "id": "timeline-2024-exploring",
+      "period": "2024",
+      "role": "Exploring Technology & Software Engineering",
+      "organization": "MIST & Independent Development",
+      "location": "Hyderabad, Telangana, India",
+      "description": "Started developing practical skills in programming, web development, AI/ML, and software development through academic and personal projects.",
+      "highlights": [
+        "Python, Data Structures & Algorithms",
+        "Full-Stack Web Development & Machine Learning Fundamentals"
       ],
       "type": "experience"
     },
     {
-      "id": "leadership-ai-lead",
-      "period": "2024 - Present",
-      "role": "AI & Computer Vision Project Lead",
-      "organization": "Mahaveer Institute Innovation Hub",
+      "id": "timeline-2025-building",
+      "period": "2025",
+      "role": "Building & Creating AI/ML Applications",
+      "organization": "Technomist 2K25 & Personal Projects",
       "location": "Hyderabad, Telangana, India",
-      "description": "Leading technical research projects in computer vision facial recognition, automated attendance systems, and deep learning analytics.",
+      "description": "Developed real-world interactive software applications and won 1st Prize in 'Design Freaks' at Technomist 2K25, strengthening interest in UI/UX and creative technology.",
       "highlights": [
-        "Engineered real-time facial biometric attendance system",
-        "Mentored junior CSE students in Python AI/ML libraries",
-        "Built dark luxury telemetry web interfaces"
+        "🏆 Won 1st Prize in 'Design Freaks' at Technomist 2K25",
+        "Built QR Code Attendance System & QR Code Maker",
+        "Developed Multiplayer Number Guessing Game & AI Chatbot",
+        "Created Interactive Birthday Letter"
       ],
       "type": "leadership"
     },
     {
-      "id": "experience-freelance",
-      "period": "2024 - Present",
-      "role": "Full Stack & AI Engineer (Freelance / Projects)",
-      "organization": "Independent Software Practice",
+      "id": "timeline-2026-internship",
+      "period": "2026",
+      "role": "AI Engineering Internship",
+      "organization": "Arah Infotech Pvt Ltd",
       "location": "Hyderabad, Telangana, India",
-      "description": "Building production web applications, AI API integrations, and mobile solutions for clients and open-source projects.",
+      "description": "Joined Arah Infotech as an AI Engineer Intern, working on Hire IQ — an AI-powered interview platform.",
       "highlights": [
-        "Built 60 FPS glassmorphism web applications",
-        "Integrated OpenCV & PyTorch pipelines into cloud databases",
-        "Delivered end-to-end full-stack software"
+        "AI interview systems & automated resume analysis",
+        "AI calling, webcam/proctoring, speech-to-text & text-to-speech engine",
+        "Admin dashboards & OmniDimension integrations",
+        "Bug fixing, testing and 60 FPS performance optimization"
       ],
       "type": "experience"
+    },
+    {
+      "id": "timeline-2026-brand",
+      "period": "2026",
+      "role": "Building My Own Brand (Build Studio)",
+      "organization": "Build Studio",
+      "location": "Hyderabad, Telangana, India",
+      "description": "Started working on Build Studio, focusing on web development, app development, and UI/UX solutions for businesses.",
+      "highlights": [
+        "Full-stack web development & mobile app solutions",
+        "Custom UI/UX designs for modern businesses"
+      ],
+      "type": "leadership"
+    },
+    {
+      "id": "timeline-2026-today",
+      "period": "Today",
+      "role": "Building the Future 🚀",
+      "organization": "AI, Full-Stack & Creative Technology",
+      "location": "Hyderabad, Telangana, India",
+      "description": "Currently focused on AI, full-stack development, creative design, entrepreneurship, and building real-world products — turning ideas into useful digital experiences.",
+      "highlights": [
+        "AI Neural Networks, Deep Learning & Computer Vision Pipelines",
+        "Crafting High-Performance Next.js, React & Flutter Platforms",
+        "Turning ambitious ideas into impactful digital products"
+      ],
+      "type": "leadership"
     }
   ]
 };
