@@ -459,6 +459,21 @@ export const initialPortfolioData: PortfolioData = {
       ]
     },
     {
+      "id": "cert-tcs-ion-communication",
+      "title": "Communication Skills - Certificate of Achievement",
+      "issuer": "TCS iON (Tata Consultancy Services)",
+      "date": "16 AUG 2026",
+      "badge": "TCS iON Certified (ID: 91306-33508429-1016)",
+      "skillsCovered": [
+        "Effective Communication",
+        "Verbal & Non-Verbal Communication",
+        "Barriers to Communication",
+        "Corporate & Professional Excellence",
+        "Process of Communication"
+      ],
+      "imageUrl": "/assets/certificates/cert-tcs-ion-communication.png"
+    },
+    {
       "id": "cert-ibm-ai-literacy",
       "title": "AI Literacy",
       "issuer": "IBM SkillsBuild",
