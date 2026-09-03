@@ -59,12 +59,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
   return (
     <section id="contact" className="py-24 px-4 max-w-7xl mx-auto">
       {/* Section Header */}
-      <div className="text-center space-y-3 mb-16">
+      <div className="text-center space-y-2 mb-10">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crimson-500/10 border border-crimson-500/30 text-crimson-500 text-xs font-code uppercase">
           <Sparkles className="w-3.5 h-3.5" />
           Get In Touch
         </div>
-        <h2 className="font-bebas text-5xl sm:text-6xl text-white tracking-wide">
+        <h2 className="font-bebas text-3xl sm:text-4xl text-white tracking-widest uppercase">
           LET'S BUILD SOMETHING <span className="text-crimson-500 text-glow">EXTRAORDINARY</span>
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">

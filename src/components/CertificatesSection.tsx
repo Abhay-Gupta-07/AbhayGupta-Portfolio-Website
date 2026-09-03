@@ -28,12 +28,12 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
   return (
     <section id="certificates" className="py-20 px-4 max-w-7xl mx-auto">
       {/* Centered Section Header */}
-      <div className="text-center space-y-3 mb-14">
+      <div className="text-center space-y-2 mb-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-crimson-500/10 border border-crimson-500/30 text-crimson-500 text-xs font-code uppercase">
           <Sparkles className="w-3.5 h-3.5" />
           Verified Credentials & Accreditations
         </div>
-        <h2 className="font-bebas text-5xl sm:text-6xl text-white tracking-wide">
+        <h2 className="font-bebas text-3xl sm:text-4xl text-white tracking-widest uppercase">
           AWARDS & <span className="text-crimson-500 text-glow">CERTIFICATIONS ({certificates.length})</span>
         </h2>
       </div>
