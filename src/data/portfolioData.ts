@@ -436,7 +436,83 @@ export const initialPortfolioData: PortfolioData = {
       "metrics": "99.9% Uptime "
     }
   ],
-  "certificates": [],
+  "certificates": [
+    {
+      "id": "cert-ibm-ai-literacy",
+      "title": "AI Literacy",
+      "issuer": "IBM SkillsBuild",
+      "date": "18 AUG 2026",
+      "badge": "IBM SkillsBuild Verified Credential",
+      "skillsCovered": [
+        "AI Literacy",
+        "Artificial Intelligence",
+        "Prompt Engineering",
+        "Machine Learning"
+      ],
+      "credentialUrl": "https://www.credly.com/go/IVYw4prZ",
+      "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop"
+    },
+    {
+      "id": "cert-ibm-career-management",
+      "title": "Career Management Essentials",
+      "issuer": "IBM SkillsBuild",
+      "date": "Aug 19, 2026",
+      "badge": "IBM SkillsBuild Professional Badge",
+      "skillsCovered": [
+        "Professional Excellence",
+        "Career Management",
+        "Leadership",
+        "Executive Communication"
+      ],
+      "credentialUrl": "https://www.credly.com/badges/ed894c24-04cc-47aa-aa85-ac40f225d38c",
+      "imageUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop"
+    },
+    {
+      "id": "cert-ibm-project-management",
+      "title": "Project Management Fundamentals",
+      "issuer": "IBM SkillsBuild",
+      "date": "19 AUG 2026",
+      "badge": "IBM SkillsBuild Certified",
+      "skillsCovered": [
+        "Project Management",
+        "Agile Methodology",
+        "Team Leadership",
+        "Risk Management"
+      ],
+      "credentialUrl": "https://www.credly.com/go/cNWI9Ct8",
+      "imageUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop"
+    },
+    {
+      "id": "cert-ibm-ai-fundamentals",
+      "title": "Artificial Intelligence Fundamentals",
+      "issuer": "IBM SkillsBuild",
+      "date": "Mar 01, 2025",
+      "badge": "IBM SkillsBuild AI Specialist",
+      "skillsCovered": [
+        "Artificial Intelligence",
+        "Deep Learning",
+        "Neural Networks",
+        "Computer Vision"
+      ],
+      "credentialUrl": "https://www.credly.com/badges/1f70bc0e-5000-445e-9141-410e09008ef8",
+      "imageUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop"
+    },
+    {
+      "id": "cert-ibm-prompt-engineering",
+      "title": "Craft Precise Prompts for AI Models",
+      "issuer": "IBM SkillsBuild",
+      "date": "20 AUG 2026",
+      "badge": "IBM SkillsBuild Advanced AI",
+      "skillsCovered": [
+        "Prompt Engineering",
+        "LLM Fine-Tuning",
+        "Generative AI",
+        "AI Models"
+      ],
+      "credentialUrl": "https://www.credly.com/go/Qf7s7MbY",
+      "imageUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop"
+    }
+  ],
   "skills": [
     {
       "category": "Artificial Intelligence & Machine Learning",
