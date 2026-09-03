@@ -750,6 +750,20 @@ export const initialPortfolioData: PortfolioData = {
       "type": "education"
     },
     {
+      "id": "experience-arah-infotech",
+      "period": "May 2026 - Aug 2026",
+      "role": "AI / ML Engineer Intern",
+      "organization": "Arah Infotech Pvt Ltd",
+      "location": "Hyderabad, Telangana, India",
+      "description": "Gained hands-on experience in Artificial Intelligence, Machine Learning, Data Analysis, Python Programming, Model Development, and AI-driven solutions.",
+      "highlights": [
+        "Contributed to real-time AI/ML projects and data processing pipelines under technical team guidance",
+        "Engineered predictive machine learning models and data analytics workflows",
+        "Implemented intelligent AI-driven solutions and model optimization techniques"
+      ],
+      "type": "experience"
+    },
+    {
       "id": "leadership-ai-lead",
       "period": "2024 - Present",
       "role": "AI & Computer Vision Project Lead",
