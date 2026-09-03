@@ -27,6 +27,7 @@ export interface Certificate {
   skillsCovered: string[];
   imageUrl?: string;
   pdfUrl?: string;
+  images?: string[];
 }
 
 export interface SkillItem {
@@ -437,6 +438,26 @@ export const initialPortfolioData: PortfolioData = {
     }
   ],
   "certificates": [
+    {
+      "id": "cert-arah-infotech-aiml",
+      "title": "AI/ML Engineer Internship Certificate",
+      "issuer": "ARAH INFOTECH PVT LTD",
+      "date": "26 AUG 2026",
+      "badge": "Arah Infotech Verified AI/ML Internship",
+      "skillsCovered": [
+        "Artificial Intelligence",
+        "Machine Learning",
+        "Data Analysis",
+        "Python Programming",
+        "Model Development",
+        "AI-driven Solutions"
+      ],
+      "imageUrl": "/assets/certificates/cert-arah-infotech-photo.jpg",
+      "images": [
+        "/assets/certificates/cert-arah-infotech-photo.jpg",
+        "/assets/certificates/cert-arah-infotech-doc.png"
+      ]
+    },
     {
       "id": "cert-ibm-ai-literacy",
       "title": "AI Literacy",
