@@ -17,7 +17,7 @@ import { SpideyAdmin } from './components/SpideyAdmin';
 
 export const App: React.FC = () => {
   const [portfolioData, setPortfolioData] = useState<PortfolioData>(() => {
-    const saved = localStorage.getItem('abhay_portfolio_data_v3');
+    const saved = localStorage.getItem('abhay_portfolio_data_v4');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -70,7 +70,7 @@ export const App: React.FC = () => {
   // Fallback cross-tab synchronization via localStorage events
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'abhay_portfolio_data_v3' && e.newValue) {
+      if (e.key === 'abhay_portfolio_data_v4' && e.newValue) {
         try {
           const parsed = JSON.parse(e.newValue);
           setPortfolioData(ensureValidPortfolioData(parsed));
