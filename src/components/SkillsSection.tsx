@@ -73,9 +73,9 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
             initial={{ opacity: 0, x: sIdx % 2 === 0 ? -20 : 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: sIdx * 0.05 }}
-            className={`p-5 rounded-xl glass-card border transition-all duration-300 ${
+            className={`p-5 rounded-xl glass-card bg-[#120708]/40 backdrop-blur-md border transition-all duration-300 hover:border-crimson-500/50 hover:bg-[#120708]/60 ${
               skill.highlight
-                ? 'border-crimson-500/30 bg-[#1a0a0c]/80 shadow-[0_0_15px_rgba(255,30,45,0.15)]'
+                ? 'border-crimson-500/40 bg-[#1a0a0c]/50 shadow-[0_0_20px_rgba(255,30,45,0.2)]'
                 : 'border-white/10'
             }`}
           >

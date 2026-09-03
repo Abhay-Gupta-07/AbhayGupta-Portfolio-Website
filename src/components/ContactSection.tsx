@@ -76,13 +76,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
         
         {/* Contact Info Cards */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-8 rounded-2xl glass-card-crimson border border-crimson-500/30 space-y-6">
+          <div className="p-8 rounded-2xl glass-card-crimson bg-[#16080a]/40 backdrop-blur-md border border-crimson-500/30 space-y-6">
             <h3 className="font-bebas text-3xl text-white tracking-wide">
               DIRECT CONTACT
             </h3>
 
             {/* Email Box with Copy */}
-            <div className="p-4 rounded-xl bg-black/50 border border-white/10 flex items-center justify-between gap-3">
+            <div className="p-4 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 overflow-hidden">
                 <div className="p-2.5 rounded-lg bg-crimson-500/20 text-crimson-500 shrink-0">
                   <Mail className="w-5 h-5" />
@@ -103,7 +103,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
             </div>
 
             {/* Location Box */}
-            <div className="p-4 rounded-xl bg-black/50 border border-white/10 flex items-center gap-3">
+            <div className="p-4 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 flex items-center gap-3">
               <div className="p-2.5 rounded-lg bg-crimson-500/20 text-crimson-500 shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
@@ -161,7 +161,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
         <div className="lg:col-span-7">
           <form
             onSubmit={handleSubmit}
-            className="p-8 rounded-2xl glass-card border border-white/10 space-y-5 relative overflow-hidden"
+            className="p-8 rounded-2xl glass-card bg-[#120708]/40 backdrop-blur-md border border-white/10 space-y-5 relative overflow-hidden"
           >
             <h3 className="font-bebas text-3xl text-white tracking-wide">
               SEND A MESSAGE
@@ -208,7 +208,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
                       placeholder="e.g. Alex Mercer"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/10 focus:border-crimson-500 focus:outline-none text-sm text-white placeholder-gray-600 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 focus:border-crimson-500 focus:shadow-[0_0_15px_rgba(255,30,45,0.3)] focus:outline-none text-sm text-white placeholder-gray-500 transition-all"
                     />
                   </div>
 
@@ -220,7 +220,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
                       placeholder="e.g. alex@company.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/10 focus:border-crimson-500 focus:outline-none text-sm text-white placeholder-gray-600 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 focus:border-crimson-500 focus:shadow-[0_0_15px_rgba(255,30,45,0.3)] focus:outline-none text-sm text-white placeholder-gray-500 transition-all"
                     />
                   </div>
                 </div>
@@ -233,7 +233,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
                     placeholder="Describe your project, timeline, or inquiry..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/10 focus:border-crimson-500 focus:outline-none text-sm text-white placeholder-gray-600 transition-colors resize-none"
+                    className="w-full px-4 py-3 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 focus:border-crimson-500 focus:shadow-[0_0_15px_rgba(255,30,45,0.3)] focus:outline-none text-sm text-white placeholder-gray-500 transition-all resize-none"
                   />
                 </div>
 

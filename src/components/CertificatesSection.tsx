@@ -53,14 +53,14 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.08 }}
               onClick={() => handleOpenCert(cert)}
-              className="group relative p-4 rounded-2xl bg-[#120708]/90 border border-white/10 hover:border-crimson-500/50 hover:shadow-[0_10px_30px_rgba(255,30,45,0.25)] transition-all duration-300 flex flex-col justify-between cursor-pointer overflow-hidden"
+              className="group relative p-4 rounded-2xl glass-card bg-[#120708]/40 backdrop-blur-md border border-white/10 hover:border-crimson-500/60 hover:bg-[#120708]/60 hover:shadow-[0_12px_35px_rgba(255,30,45,0.3)] transition-all duration-350 flex flex-col justify-between cursor-pointer overflow-hidden"
             >
               {/* Top Red Glow Hover Line */}
               <div className="absolute top-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-crimson-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
               <div>
                 {/* Thumbnail Image Container */}
-                <div className="w-full h-44 bg-black/80 rounded-xl overflow-hidden mb-3.5 border border-white/10 flex items-center justify-center relative group-hover:border-crimson-500/40 transition-all">
+                <div className="w-full h-44 bg-black/40 backdrop-blur-sm rounded-xl overflow-hidden mb-3.5 border border-white/10 flex items-center justify-center relative group-hover:border-crimson-500/40 transition-all">
                   {/* Multi-Slide Badge */}
                   {hasMultipleSlides && (
                     <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded-full bg-crimson-500/90 text-white text-[9px] font-code font-bold flex items-center gap-1 shadow-md">

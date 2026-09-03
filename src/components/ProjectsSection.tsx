@@ -64,8 +64,11 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: idx * 0.1 }}
-            className="group relative rounded-2xl glass-card border border-white/10 hover:border-crimson-500/50 overflow-hidden flex flex-col justify-between hover:shadow-[0_15px_40px_rgba(255,30,45,0.25)] transition-all duration-300"
+            className="group relative rounded-2xl glass-card bg-[#120708]/40 backdrop-blur-md border border-white/10 hover:border-crimson-500/60 hover:bg-[#120708]/60 overflow-hidden flex flex-col justify-between hover:shadow-[0_15px_45px_rgba(255,30,45,0.3)] transition-all duration-350"
           >
+            {/* Top Red Glow Hover Line */}
+            <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-transparent via-crimson-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-20" />
+
             {/* Card Top Media Image */}
             <div className="relative h-52 w-full overflow-hidden bg-neutral-900">
               <img

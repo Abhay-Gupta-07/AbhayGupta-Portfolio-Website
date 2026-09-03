@@ -45,12 +45,12 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ timeline }) =>
             <div className="absolute left-0 top-6 w-4 sm:w-5 h-0.5 bg-crimson-500/80 group-hover:bg-crimson-500 transition-colors" />
 
             {/* Timeline Node Icon (Positioned Beside Line - 0 Overlap) */}
-            <div className="absolute left-4 sm:left-5 top-1 w-10 h-10 rounded-full bg-[#120708] border-2 border-crimson-500 flex items-center justify-center shadow-[0_0_15px_rgba(255,30,45,0.6)] group-hover:scale-110 transition-transform z-10">
+            <div className="absolute left-4 sm:left-5 top-1 w-10 h-10 rounded-full bg-[#120708]/80 backdrop-blur-md border-2 border-crimson-500 flex items-center justify-center shadow-[0_0_20px_rgba(255,30,45,0.6)] group-hover:scale-110 transition-transform z-10">
               {typeIconMap[item.type] || <Award className="w-5 h-5 text-crimson-500" />}
             </div>
 
             {/* Timeline Card */}
-            <div className="p-6 sm:p-8 rounded-2xl glass-card border border-white/10 hover:border-crimson-500/40 hover:shadow-[0_10px_30px_rgba(255,30,45,0.2)] transition-all">
+            <div className="p-6 sm:p-8 rounded-2xl glass-card bg-[#120708]/40 backdrop-blur-md border border-white/10 hover:border-crimson-500/60 hover:bg-[#120708]/60 hover:shadow-[0_15px_40px_rgba(255,30,45,0.3)] transition-all duration-350">
               
               {/* Header Info */}
               <div className="flex flex-wrap items-center justify-between gap-2 mb-3">

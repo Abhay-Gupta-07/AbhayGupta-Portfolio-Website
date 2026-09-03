@@ -835,7 +835,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
                 <Reorder.Item
                   key={proj.id}
                   value={proj}
-                  className="p-5 rounded-xl glass-card border border-white/10 hover:border-crimson-500/50 flex flex-col justify-between gap-3 relative group bg-[#120708]/90 cursor-grab active:cursor-grabbing select-none"
+                  className="p-5 rounded-xl glass-card border border-white/10 hover:border-crimson-500/50 flex flex-col justify-between gap-3 relative group bg-[#120708]/50 backdrop-blur-md cursor-grab active:cursor-grabbing select-none"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2">
@@ -957,7 +957,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
                 <Reorder.Item
                   key={cert.id}
                   value={cert}
-                  className="p-4 rounded-xl glass-card border border-white/10 flex flex-col justify-between gap-3 bg-[#120708]/90 cursor-grab active:cursor-grabbing select-none"
+                  className="p-4 rounded-xl glass-card border border-white/10 flex flex-col justify-between gap-3 bg-[#120708]/50 backdrop-blur-md cursor-grab active:cursor-grabbing select-none"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
