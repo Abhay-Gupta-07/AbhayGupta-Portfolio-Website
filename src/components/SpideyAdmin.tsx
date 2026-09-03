@@ -328,7 +328,9 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
           : typeof editingCert.skillsCovered === 'string'
           ? (editingCert.skillsCovered as string).split(',').map((s) => s.trim()).filter(Boolean)
           : ['AI/ML', 'Full-Stack'],
-        imageUrl: editingCert.imageUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop'
+        imageUrl: editingCert.imageUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop',
+        pdfUrl: editingCert.pdfUrl,
+        images: editingCert.images
       };
       updatedCerts = [...(formData.certificates || []), newCert];
     } else {
@@ -394,6 +396,7 @@ export interface Certificate {
   skillsCovered: string[];
   imageUrl?: string;
   pdfUrl?: string;
+  images?: string[];
 }
 
 export interface SkillItem {
@@ -1618,6 +1621,28 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
                     type="text"
                     value={editingCert.credentialUrl || ''}
                     onChange={(e) => setEditingCert({ ...editingCert, credentialUrl: e.target.value })}
+                    className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-code text-gray-400">Key Competencies & Skills Covered (comma-separated)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Artificial Intelligence, Machine Learning, Python"
+                    value={
+                      Array.isArray(editingCert.skillsCovered)
+                        ? editingCert.skillsCovered.join(', ')
+                        : typeof editingCert.skillsCovered === 'string'
+                        ? editingCert.skillsCovered
+                        : ''
+                    }
+                    onChange={(e) =>
+                      setEditingCert({
+                        ...editingCert,
+                        skillsCovered: e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
+                      })
+                    }
                     className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
                   />
                 </div>
