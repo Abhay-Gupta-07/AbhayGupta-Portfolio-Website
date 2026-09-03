@@ -1,3 +1,5 @@
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore, doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import type { PortfolioData } from '../data/portfolioData';
 import { initialPortfolioData } from '../data/portfolioData';
 
@@ -15,6 +17,39 @@ const STORAGE_KEY_CONFIG = 'spidey_admin_firebase_config_v1';
 const BROADCAST_CHANNEL_NAME = 'spidey_portfolio_sync_v1';
 const IDB_NAME = 'AbhayPortfolioDB_v1';
 const IDB_STORE = 'portfolio_store';
+
+let cachedFirestoreDB: any = null;
+let cachedAppProjectId: string = '';
+
+/**
+ * Initialize or reuse Firebase Firestore instance dynamically based on active credentials
+ */
+export const getFirestoreDB = (config: FirebaseConfig = getFirebaseConfig()) => {
+  if (!config.projectId) return null;
+  if (cachedFirestoreDB && cachedAppProjectId === config.projectId) {
+    return cachedFirestoreDB;
+  }
+
+  try {
+    const existingApps = getApps();
+    const app = existingApps.length > 0
+      ? getApp()
+      : initializeApp({
+          apiKey: config.apiKey || 'AIzaSy_dummy_key_for_firestore_read',
+          authDomain: config.authDomain || `${config.projectId}.firebaseapp.com`,
+          projectId: config.projectId,
+          storageBucket: config.storageBucket || `${config.projectId}.appspot.com`,
+          messagingSenderId: config.messagingSenderId || '100000000000',
+          appId: config.appId || '1:100000000000:web:abcdef123456',
+        });
+    cachedFirestoreDB = getFirestore(app);
+    cachedAppProjectId = config.projectId;
+    return cachedFirestoreDB;
+  } catch (err) {
+    console.warn('Firebase SDK initialization notice:', err);
+    return null;
+  }
+};
 
 /**
  * IndexedDB helper for persistent storage without 5MB LocalStorage quota limits.
@@ -73,7 +108,7 @@ export const ensureValidPortfolioData = (data: any): PortfolioData => {
     return initialPortfolioData;
   }
 
-  const validProjects = Array.isArray(data.projects) && data.projects.length > 0
+  const validProjects = Array.isArray(data.projects)
     ? data.projects
     : initialPortfolioData.projects;
 
@@ -81,15 +116,15 @@ export const ensureValidPortfolioData = (data: any): PortfolioData => {
     ? data.certificates
     : initialPortfolioData.certificates;
 
-  const validSkills = Array.isArray(data.skills) && data.skills.length > 0
+  const validSkills = Array.isArray(data.skills)
     ? data.skills
     : initialPortfolioData.skills;
 
-  const validServices = Array.isArray(data.services) && data.services.length > 0
+  const validServices = Array.isArray(data.services)
     ? data.services
     : initialPortfolioData.services;
 
-  const validTimeline = Array.isArray(data.timeline) && data.timeline.length > 0
+  const validTimeline = Array.isArray(data.timeline)
     ? data.timeline
     : initialPortfolioData.timeline;
 
@@ -154,6 +189,47 @@ export const subscribeToDataSync = (callback: (data: PortfolioData) => void): ((
 };
 
 /**
+ * Subscribe to online Cloud Database updates in real-time via Firestore onSnapshot
+ */
+export const subscribeToCloudDB = (callback: (data: PortfolioData) => void): (() => void) => {
+  const config = getFirebaseConfig();
+  const db = getFirestoreDB(config);
+
+  if (!db || !config.projectId) {
+    return () => {};
+  }
+
+  try {
+    const docRef = doc(db, 'portfolio', 'mainData');
+    const unsubscribe = onSnapshot(
+      docRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const snapData = docSnap.data();
+          if (snapData && snapData.jsonContent) {
+            try {
+              const parsed = JSON.parse(snapData.jsonContent);
+              const valid = ensureValidPortfolioData(parsed);
+              callback(valid);
+            } catch (err) {
+              console.warn('Error parsing Firestore snapshot JSON:', err);
+            }
+          }
+        }
+      },
+      (err) => {
+        console.warn('Firestore real-time subscription notice:', err.message);
+      }
+    );
+
+    return unsubscribe;
+  } catch (err) {
+    console.warn('Could not establish Firestore subscription:', err);
+    return () => {};
+  }
+};
+
+/**
  * Get current Firebase configuration from localStorage or environment variables.
  */
 export const getFirebaseConfig = (): FirebaseConfig => {
@@ -186,7 +262,7 @@ export const saveFirebaseConfig = (config: FirebaseConfig): void => {
 };
 
 /**
- * Save portfolio data to IndexedDB, LocalStorage, Broadcast to Open Tabs, and optional Cloud DB.
+ * Save portfolio data to IndexedDB, LocalStorage, Broadcast to Open Tabs, and Online Firestore DB.
  */
 export const savePortfolioDataToDB = async (
   data: PortfolioData
@@ -216,9 +292,25 @@ export const savePortfolioDataToDB = async (
     }
   }
 
-  // 3. If Firebase Project ID is configured, save to Firestore via REST API
+  // 3. Save to Firebase Firestore Cloud Database
   const config = getFirebaseConfig();
   if (config.projectId) {
+    // 3a. Try Firebase Web SDK
+    const db = getFirestoreDB(config);
+    if (db) {
+      try {
+        const docRef = doc(db, 'portfolio', 'mainData');
+        await setDoc(docRef, {
+          jsonContent: JSON.stringify(payloadToStore),
+          updatedAt: timestamp,
+        });
+        return { success: true, source: 'firestore' };
+      } catch (sdkErr: any) {
+        console.warn('Firestore SDK save warning, trying REST API fallback:', sdkErr.message);
+      }
+    }
+
+    // 3b. REST API Fallback
     try {
       const collection = 'portfolio';
       const documentId = 'mainData';
@@ -241,7 +333,7 @@ export const savePortfolioDataToDB = async (
         return { success: true, source: 'firestore' };
       } else {
         const errText = await response.text();
-        console.warn(`Firestore sync warning (${response.status}):`, errText);
+        console.warn(`Firestore REST sync warning (${response.status}):`, errText);
         return { success: false, source: 'local', error: `Firestore status ${response.status}` };
       }
     } catch (err: any) {
@@ -254,7 +346,7 @@ export const savePortfolioDataToDB = async (
 };
 
 /**
- * Fetch portfolio data from IndexedDB, LocalStorage, or Cloud Database.
+ * Fetch portfolio data from IndexedDB, LocalStorage, or Online Cloud Database.
  */
 export const fetchPortfolioDataFromDB = async (): Promise<{
   data: PortfolioData;
@@ -264,7 +356,6 @@ export const fetchPortfolioDataFromDB = async (): Promise<{
   // 1. Read existing Local/IndexedDB cache first
   let localData: PortfolioData | null = null;
   let localTime = 0;
-  let localProjectCount = 0;
 
   try {
     const idbSaved = await getFromIDB(STORAGE_KEY_DATA);
@@ -273,7 +364,6 @@ export const fetchPortfolioDataFromDB = async (): Promise<{
       if (idbSaved?.updatedAt) {
         localTime = new Date(idbSaved.updatedAt).getTime();
       }
-      localProjectCount = localData.projects ? localData.projects.length : 0;
     }
   } catch (e) {
     console.warn('Error reading from IDB:', e);
@@ -288,16 +378,47 @@ export const fetchPortfolioDataFromDB = async (): Promise<{
         if (parsed?.updatedAt) {
           localTime = new Date(parsed.updatedAt).getTime();
         }
-        localProjectCount = localData.projects ? localData.projects.length : 0;
       }
     } catch (e) {
       console.error('Error reading localStorage portfolio data:', e);
     }
   }
 
-  // 2. If Firebase Project ID configured, fetch from Firestore REST API
+  // 2. If Firebase Project ID configured, fetch from Firestore
   const config = getFirebaseConfig();
   if (config.projectId) {
+    // 2a. Try Firebase Web SDK
+    const db = getFirestoreDB(config);
+    if (db) {
+      try {
+        const docRef = doc(db, 'portfolio', 'mainData');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const snapData = docSnap.data();
+          if (snapData && snapData.jsonContent) {
+            const cloudData = ensureValidPortfolioData(JSON.parse(snapData.jsonContent));
+            const cloudTime = snapData.updatedAt ? new Date(snapData.updatedAt).getTime() : 0;
+
+            if (localData && localTime > cloudTime) {
+              console.log('Local data is newer than Cloud DB. Syncing local to Cloud DB...');
+              savePortfolioDataToDB(localData);
+              return { data: localData, source: 'local' };
+            }
+
+            await saveToIDB(STORAGE_KEY_DATA, { ...cloudData, updatedAt: snapData.updatedAt });
+            try {
+              localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify({ ...cloudData, updatedAt: snapData.updatedAt }));
+            } catch (e) {}
+
+            return { data: cloudData, source: 'firestore' };
+          }
+        }
+      } catch (sdkErr) {
+        console.warn('Firestore SDK fetch warning, trying REST API fallback:', sdkErr);
+      }
+    }
+
+    // 2b. REST API Fallback
     try {
       const collection = 'portfolio';
       const documentId = 'mainData';
@@ -312,18 +433,13 @@ export const fetchPortfolioDataFromDB = async (): Promise<{
         if (jsonContentStr) {
           const cloudData = ensureValidPortfolioData(JSON.parse(jsonContentStr));
           const cloudTime = cloudUpdatedAt ? new Date(cloudUpdatedAt).getTime() : 0;
-          const cloudProjectCount = cloudData.projects ? cloudData.projects.length : 0;
 
-          // PROTECT LOCAL CHANGES:
-          // If local data exists and has MORE projects or NEWER timestamp than Cloud DB,
-          // KEEP local data and auto-sync local data UP to Cloud DB!
-          if (localData && (localProjectCount > cloudProjectCount || localTime > cloudTime)) {
-            console.log('Local data is newer/has more projects than Cloud DB. Syncing local to Cloud DB...');
+          if (localData && localTime > cloudTime) {
+            console.log('Local data is newer than Cloud DB. Syncing local to Cloud DB...');
             savePortfolioDataToDB(localData);
             return { data: localData, source: 'local' };
           }
 
-          // Otherwise, use Cloud DB data and update local caches
           await saveToIDB(STORAGE_KEY_DATA, { ...cloudData, updatedAt: cloudUpdatedAt });
           try {
             localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify({ ...cloudData, updatedAt: cloudUpdatedAt }));
@@ -333,7 +449,7 @@ export const fetchPortfolioDataFromDB = async (): Promise<{
         }
       }
     } catch (err: any) {
-      console.warn('Failed to fetch from Firestore, using local cache:', err);
+      console.warn('Failed to fetch from Firestore REST API, using local cache:', err);
     }
   }
 
@@ -355,6 +471,17 @@ export const testDBConnection = async (config: FirebaseConfig): Promise<{ succes
   }
 
   try {
+    const db = getFirestoreDB(config);
+    if (db) {
+      const docRef = doc(db, 'portfolio', 'mainData');
+      await getDoc(docRef);
+      return { success: true, message: `Successfully connected to Firebase Firestore Project: ${config.projectId}` };
+    }
+  } catch (err: any) {
+    console.warn('SDK connection test warning, trying REST API:', err.message);
+  }
+
+  try {
     const url = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/(default)/documents`;
     const res = await fetch(url);
     if (res.status === 200 || res.status === 404) {
@@ -367,5 +494,161 @@ export const testDBConnection = async (config: FirebaseConfig): Promise<{ succes
     return { success: false, message: `Network error: ${err?.message || 'Could not connect'}` };
   }
 };
+
+export interface AdminMessage {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  date: string;
+}
+
+/**
+ * Save user contact message to local storage, IndexedDB, and Cloud Database (Spidey Admin Inbox Only)
+ */
+export const saveAdminMessageToDB = async (
+  msg: Omit<AdminMessage, 'id' | 'date'> & { id?: string; date?: string }
+): Promise<AdminMessage> => {
+  const newMsg: AdminMessage = {
+    id: msg.id || `msg-${Date.now()}`,
+    name: msg.name,
+    email: msg.email,
+    message: msg.message,
+    date: msg.date || new Date().toLocaleString(),
+  };
+
+  try {
+    const existingStr = localStorage.getItem('spidey_admin_messages_v1');
+    const existing: AdminMessage[] = existingStr ? JSON.parse(existingStr) : [];
+    const updated = [newMsg, ...existing];
+    localStorage.setItem('spidey_admin_messages_v1', JSON.stringify(updated));
+    await saveToIDB('spidey_admin_messages_v1', updated);
+  } catch (e) {
+    console.warn('Notice saving message locally:', e);
+  }
+
+  // Also sync to Cloud DB if configured
+  const config = getFirebaseConfig();
+  if (config.projectId) {
+    const db = getFirestoreDB(config);
+    if (db) {
+      try {
+        const docRef = doc(db, 'portfolio', 'inboxMessages');
+        const existingDoc = await getDoc(docRef);
+        let cloudMsgs: AdminMessage[] = [];
+        if (existingDoc.exists()) {
+          const snapData = existingDoc.data();
+          if (snapData && snapData.jsonContent) {
+            cloudMsgs = JSON.parse(snapData.jsonContent);
+          }
+        }
+        const mergedMsgs = [newMsg, ...cloudMsgs.filter((m) => m.id !== newMsg.id)];
+        await setDoc(docRef, {
+          jsonContent: JSON.stringify(mergedMsgs),
+          updatedAt: new Date().toISOString(),
+        });
+      } catch (e) {
+        console.warn('Notice syncing message to Firestore:', e);
+      }
+    }
+  }
+
+  return newMsg;
+};
+
+/**
+ * Fetch contact messages for Spidey Admin Inbox
+ */
+export const fetchAdminMessagesFromDB = async (): Promise<AdminMessage[]> => {
+  let localMsgs: AdminMessage[] = [];
+  try {
+    const idbSaved = await getFromIDB('spidey_admin_messages_v1');
+    if (Array.isArray(idbSaved)) {
+      localMsgs = idbSaved;
+    } else {
+      const saved = localStorage.getItem('spidey_admin_messages_v1');
+      if (saved) localMsgs = JSON.parse(saved);
+    }
+  } catch (e) {}
+
+  const config = getFirebaseConfig();
+  if (config.projectId) {
+    const db = getFirestoreDB(config);
+    if (db) {
+      try {
+        const docRef = doc(db, 'portfolio', 'inboxMessages');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const snapData = docSnap.data();
+          if (snapData && snapData.jsonContent) {
+            const cloudMsgs: AdminMessage[] = JSON.parse(snapData.jsonContent);
+            if (Array.isArray(cloudMsgs) && cloudMsgs.length >= localMsgs.length) {
+              localStorage.setItem('spidey_admin_messages_v1', JSON.stringify(cloudMsgs));
+              await saveToIDB('spidey_admin_messages_v1', cloudMsgs);
+              return cloudMsgs;
+            }
+          }
+        }
+      } catch (e) {}
+    }
+  }
+
+  return localMsgs;
+};
+
+/**
+ * Delete a specific admin message
+ */
+export const deleteAdminMessageFromDB = async (msgId: string): Promise<AdminMessage[]> => {
+  let msgs: AdminMessage[] = [];
+  try {
+    const saved = localStorage.getItem('spidey_admin_messages_v1');
+    if (saved) msgs = JSON.parse(saved);
+  } catch (e) {}
+
+  const updated = msgs.filter((m) => m.id !== msgId);
+  localStorage.setItem('spidey_admin_messages_v1', JSON.stringify(updated));
+  await saveToIDB('spidey_admin_messages_v1', updated);
+
+  const config = getFirebaseConfig();
+  if (config.projectId) {
+    const db = getFirestoreDB(config);
+    if (db) {
+      try {
+        const docRef = doc(db, 'portfolio', 'inboxMessages');
+        await setDoc(docRef, {
+          jsonContent: JSON.stringify(updated),
+          updatedAt: new Date().toISOString(),
+        });
+      } catch (e) {}
+    }
+  }
+
+  return updated;
+};
+
+/**
+ * Clear all messages from Spidey Admin Inbox
+ */
+export const clearAllAdminMessagesFromDB = async (): Promise<void> => {
+  localStorage.removeItem('spidey_admin_messages_v1');
+  await saveToIDB('spidey_admin_messages_v1', []);
+
+  const config = getFirebaseConfig();
+  if (config.projectId) {
+    const db = getFirestoreDB(config);
+    if (db) {
+      try {
+        const docRef = doc(db, 'portfolio', 'inboxMessages');
+        await setDoc(docRef, {
+          jsonContent: JSON.stringify([]),
+          updatedAt: new Date().toISOString(),
+        });
+      } catch (e) {}
+    }
+  }
+};
+
+
 
 

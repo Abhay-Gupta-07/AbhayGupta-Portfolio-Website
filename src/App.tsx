@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { initialPortfolioData } from './data/portfolioData';
 import type { PortfolioData } from './data/portfolioData';
-import { fetchPortfolioDataFromDB, savePortfolioDataToDB, subscribeToDataSync, ensureValidPortfolioData } from './services/db';
+import { fetchPortfolioDataFromDB, savePortfolioDataToDB, subscribeToDataSync, subscribeToCloudDB, ensureValidPortfolioData } from './services/db';
 import { HeroCanvas } from './components/HeroCanvas';
 import { CustomCursor } from './components/CustomCursor';
 import { Navbar } from './components/Navbar';
@@ -42,6 +42,18 @@ export const App: React.FC = () => {
     });
     return () => {
       isMounted = false;
+    };
+  }, []);
+
+  // Real-time Firestore Cloud Database listener
+  useEffect(() => {
+    const unsubscribe = subscribeToCloudDB((cloudData: PortfolioData) => {
+      if (cloudData) {
+        setPortfolioData(cloudData);
+      }
+    });
+    return () => {
+      unsubscribe();
     };
   }, []);
 

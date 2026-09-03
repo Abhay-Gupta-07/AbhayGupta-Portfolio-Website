@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, Reorder } from 'framer-motion';
 import { ShieldAlert, Save, RefreshCw, Download, Upload, ArrowLeft, CheckCircle2, User, Link as LinkIcon, FolderPlus, Award, Trash2, Plus, Edit3, Lock, Key, LogOut, ShieldCheck, Mail, Send, ArrowUp, ArrowDown, Database, CloudCheck, CloudUpload, CloudDownload, Settings, GripVertical, FileCheck, Copy } from 'lucide-react';
 import type { PortfolioData, Project, Certificate } from '../data/portfolioData';
-import { getFirebaseConfig, saveFirebaseConfig, testDBConnection, savePortfolioDataToDB, fetchPortfolioDataFromDB, ensureValidPortfolioData } from '../services/db';
+import { getFirebaseConfig, saveFirebaseConfig, testDBConnection, savePortfolioDataToDB, fetchPortfolioDataFromDB, ensureValidPortfolioData, fetchAdminMessagesFromDB, deleteAdminMessageFromDB, clearAllAdminMessagesFromDB, type AdminMessage } from '../services/db';
 
 interface SpideyAdminProps {
   data: PortfolioData;
@@ -34,7 +34,7 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
   const [dbStatusMsg, setDbStatusMsg] = useState<{ success?: boolean; text?: string } | null>(null);
   const [isSyncingDB, setIsSyncingDB] = useState(false);
 
-  const [inboxMessages, setInboxMessages] = useState<any[]>(() => {
+  const [inboxMessages, setInboxMessages] = useState<AdminMessage[]>(() => {
     try {
       return JSON.parse(localStorage.getItem('spidey_admin_messages_v1') || '[]');
     } catch {
@@ -42,10 +42,30 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
     }
   });
 
-  const handleClearInbox = () => {
+  // Sync inbox messages from local storage & cloud database
+  useEffect(() => {
+    let isMounted = true;
+    fetchAdminMessagesFromDB().then((msgs) => {
+      if (isMounted && Array.isArray(msgs)) {
+        setInboxMessages(msgs);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [activeTab]);
+
+  const handleClearInbox = async () => {
     if (confirm('Clear all received inbox messages?')) {
-      localStorage.removeItem('spidey_admin_messages_v1');
+      await clearAllAdminMessagesFromDB();
       setInboxMessages([]);
+    }
+  };
+
+  const handleDeleteSingleMessage = async (msgId: string) => {
+    if (confirm('Delete this message?')) {
+      const updated = await deleteAdminMessageFromDB(msgId);
+      setInboxMessages(updated);
     }
   };
 
@@ -1045,7 +1065,16 @@ export const SpideyAdmin: React.FC<SpideyAdminProps> = ({ data, onSave, onReset,
                     <p className="text-gray-300 text-xs leading-relaxed font-outfit bg-white/5 p-3 rounded-lg border border-white/5">
                       {msg.message}
                     </p>
-                    <div className="flex justify-end pt-1">
+                    <div className="flex items-center justify-between pt-1">
+                      <button
+                        onClick={() => handleDeleteSingleMessage(msg.id)}
+                        className="text-xs text-red-400 hover:text-red-300 font-semibold flex items-center gap-1 transition-colors"
+                        title="Delete Message"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Delete
+                      </button>
+
                       <a
                         href={`mailto:${msg.email}?subject=Re:%20Portfolio%20Inquiry`}
                         className="text-xs text-crimson-400 font-semibold hover:underline flex items-center gap-1"

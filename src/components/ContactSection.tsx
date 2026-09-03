@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Mail, MapPin, Send, Sparkles, CheckCircle2, Copy, Loader2, ExternalLink } from 'lucide-react';
+import { Mail, MapPin, Send, Sparkles, CheckCircle2, Copy, Loader2 } from 'lucide-react';
 import type { PersonalInfo } from '../data/portfolioData';
+
+import { saveAdminMessageToDB } from '../services/db';
 
 interface ContactSectionProps {
   data: PersonalInfo;
@@ -20,7 +22,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
 
     setIsSending(true);
 
-    // 1. Particle Confetti Explosion
+    // 1. Particle Confetti Celebration
     confetti({
       particleCount: 100,
       spread: 80,
@@ -28,41 +30,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
       colors: ['#ff1e2d', '#ffffff', '#b30915']
     });
 
-    // 2. Save Message to LocalStorage for Spidey Admin Inbox
+    // 2. Save Message EXCLUSIVELY to Spidey Admin Section (LocalStorage + IndexedDB + Cloud Firestore)
     try {
-      const savedMessages = JSON.parse(localStorage.getItem('spidey_admin_messages_v1') || '[]');
-      const newMessage = {
-        id: `msg-${Date.now()}`,
+      await saveAdminMessageToDB({
         name: formData.name,
         email: formData.email,
         message: formData.message,
-        date: new Date().toLocaleString()
-      };
-      localStorage.setItem('spidey_admin_messages_v1', JSON.stringify([newMessage, ...savedMessages]));
-    } catch (err) {
-      console.error('Error saving message to inbox:', err);
-    }
-
-    // 3. Try API Dispatch with graceful fallback
-    try {
-      await fetch('https://formspree.io/f/mqkrvkky', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          _subject: `Portfolio Inquiry from ${formData.name}`
-        })
       });
-    } catch (apiErr) {
-      console.log('API fallback active:', apiErr);
+    } catch (err) {
+      console.error('Error saving message to Spidey Admin inbox:', err);
     }
-
-    // 4. Trigger Direct Mailto Link as guaranteed fallback
-    const mailtoSubject = encodeURIComponent(`Portfolio Inquiry from ${formData.name}`);
-    const mailtoBody = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
-    window.open(`mailto:${data.email}?subject=${mailtoSubject}&body=${mailtoBody}`, '_blank');
 
     setIsSending(false);
     setSubmitted(true);
@@ -202,29 +179,20 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ data }) => {
 
                 <div>
                   <h4 className="font-bebas text-3xl text-white tracking-wide">
-                    MESSAGE TRANSMITTED TO ABHAY GUPTA!
+                    MESSAGE TRANSMITTED TO SPIDEY ADMIN!
                   </h4>
                   <p className="text-gray-300 text-xs sm:text-sm font-outfit mt-1 max-w-md mx-auto">
-                    Thank you, <strong className="text-white">{formData.name}</strong>! Your inquiry has been saved and dispatched directly to <span className="text-crimson-400 font-semibold">{data.email}</span>.
+                    Thank you, <strong className="text-white">{formData.name}</strong>! Your message has been delivered directly to <span className="text-crimson-400 font-semibold font-code">Spidey Admin Console</span>. Abhay will review your message shortly.
                   </p>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-3 pt-2">
-                  <a
-                    href={`mailto:${data.email}?subject=${encodeURIComponent(`Portfolio Inquiry from ${formData.name}`)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-all"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    Open Email Client Directly
-                  </a>
-
+                <div className="flex justify-center pt-2">
                   <button
                     type="button"
                     onClick={handleResetForm}
-                    className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 text-xs font-semibold transition-all"
+                    className="px-5 py-2.5 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-white text-xs font-semibold shadow-md transition-all flex items-center gap-2"
                   >
+                    <Send className="w-3.5 h-3.5" />
                     Send Another Message
                   </button>
                 </div>
