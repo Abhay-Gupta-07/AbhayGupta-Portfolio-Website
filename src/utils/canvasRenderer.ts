@@ -56,8 +56,8 @@ export function renderCanvasFrame(
     hasImage = true;
     const hRatio = width / imageFrame.naturalWidth;
     const vRatio = height / imageFrame.naturalHeight;
-    const ratio = Math.max(hRatio, vRatio);
-    const verticalOffset = Math.min(80, height * 0.06);
+    const baseRatio = Math.max(hRatio, vRatio);
+    const isMobile = width < 768 || (width / height) < 1.0;
 
     // Determine 1-indexed frame number (1 to 192)
     const currentFrame = (frameIndex !== undefined ? frameIndex : Math.floor(scrollProgress * 192)) + 1;
@@ -72,18 +72,30 @@ export function renderCanvasFrame(
       faceWeight = 0.0;
     }
 
-    // Full-screen cover framing:
-    // Center face in middle of screen for frames 1 to 27 while zooming edge-to-edge
-    const faceY = (height * 0.46) - (imageFrame.naturalHeight * ratio * 0.20);
-    const normalY = (height - imageFrame.naturalHeight * ratio) / 2 + verticalOffset;
+    // Scale ratio boost when zooming face focus so image height allows vertical shift without black gaps
+    const zoomFactor = isMobile
+      ? (1.0 + 0.25 * faceWeight)
+      : (1.0 + 0.15 * faceWeight);
 
-    const centerShift_x = (width - imageFrame.naturalWidth * ratio) / 2;
-    const centerShift_y = normalY * (1 - faceWeight) + faceY * faceWeight;
+    const ratio = baseRatio * zoomFactor;
+    const imgWidth = imageFrame.naturalWidth * ratio;
+    const imgHeight = imageFrame.naturalHeight * ratio;
+
+    // Calculate vertical position for face focus vs centered cover
+    const faceY = (height * 0.38) - (imgHeight * 0.22);
+    const normalY = (height - imgHeight) / 2;
+    const rawY = normalY * (1 - faceWeight) + faceY * faceWeight;
+
+    // Center horizontally
+    const centerShift_x = (width - imgWidth) / 2;
+
+    // Clamp centerShift_y strictly between [height - imgHeight, 0] to eliminate any top or bottom black gap
+    const centerShift_y = Math.min(0, Math.max(height - imgHeight, rawY));
 
     ctx.drawImage(
       imageFrame,
       0, 0, imageFrame.naturalWidth, imageFrame.naturalHeight,
-      centerShift_x, centerShift_y, imageFrame.naturalWidth * ratio, imageFrame.naturalHeight * ratio
+      centerShift_x, centerShift_y, imgWidth, imgHeight
     );
   }
 
