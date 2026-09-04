@@ -19,7 +19,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
   };
 
   return (
-    <section id="hero" className="min-h-screen relative pt-28 pb-16 px-4 max-w-7xl mx-auto flex flex-col justify-center overflow-hidden">
+    <section id="hero" className="min-h-screen relative pt-20 sm:pt-28 pb-16 px-4 max-w-7xl mx-auto flex flex-col justify-center overflow-hidden">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
 
         {/* LEFT COLUMN: Main Hero Text & CTAs */}

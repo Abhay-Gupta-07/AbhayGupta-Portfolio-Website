@@ -51,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection, onOpenAdmin
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center p-3 sm:p-4 transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-1.5 sm:pt-4 px-2.5 sm:px-4 pb-2 transition-all duration-300">
       {/* Floating Glass Pill Navigation Bar */}
       <motion.nav
         initial={{ y: -50, opacity: 0 }}
@@ -131,7 +131,7 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection, onOpenAdmin
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="absolute top-20 left-4 right-4 bg-[#120708]/95 backdrop-blur-2xl border border-crimson-500/30 rounded-2xl p-6 shadow-2xl lg:hidden flex flex-col gap-4"
+          className="absolute top-14 sm:top-20 left-3 right-3 bg-[#120708]/95 backdrop-blur-2xl border border-crimson-500/30 rounded-2xl p-6 shadow-2xl lg:hidden flex flex-col gap-4"
         >
           <ul className="flex flex-col gap-3">
             {navLinks.map((link) => (
