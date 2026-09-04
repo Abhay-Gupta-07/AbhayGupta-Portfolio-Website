@@ -13,10 +13,10 @@ if (!fs.existsSync(framesDir)) {
 
 console.log('Generating 192 frame asset structure in public/assets/frames/...');
 
-// Generate 192 SVG/JPG frame placeholder files with glowing dark sci-fi graphics
+// Generate 192 SVG/PNG frame placeholder files with glowing dark sci-fi graphics
 for (let i = 1; i <= 192; i++) {
   const frameNum = String(i).padStart(3, '0');
-  const filePath = path.join(framesDir, `frame_${frameNum}.jpg`);
+  const filePath = path.join(framesDir, `frame_${frameNum}.png`);
   
   // Create high-tech SVG representation converted to frame file
   const hue = Math.floor((i / 192) * 40); // Shift towards deep crimson

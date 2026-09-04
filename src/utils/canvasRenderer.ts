@@ -4,7 +4,7 @@ export interface FramePreloadResult {
 }
 
 /**
- * Preloads 192 frame images from public/assets/frames/frame_XXX.jpg
+ * Preloads 192 frame images from public/assets/frames/frame_XXX.png
  */
 export function preloadFrameImages(
   totalFrames: number = 192,
@@ -17,7 +17,7 @@ export function preloadFrameImages(
     for (let i = 1; i <= totalFrames; i++) {
       const img = new Image();
       const frameNum = String(i).padStart(3, '0');
-      img.src = `/assets/frames/frame_${frameNum}.jpg`;
+      img.src = `/assets/frames/frame_${frameNum}.png`;
 
       img.onload = () => {
         loadedCount++;
@@ -45,7 +45,8 @@ export function renderCanvasFrame(
   width: number,
   height: number,
   scrollProgress: number, // 0.0 to 1.0
-  imageFrame?: HTMLImageElement | null
+  imageFrame?: HTMLImageElement | null,
+  frameIndex?: number
 ) {
   ctx.clearRect(0, 0, width, height);
 
@@ -56,8 +57,28 @@ export function renderCanvasFrame(
     const hRatio = width / imageFrame.naturalWidth;
     const vRatio = height / imageFrame.naturalHeight;
     const ratio = Math.max(hRatio, vRatio);
+    const verticalOffset = Math.min(80, height * 0.06);
+
+    // Determine 1-indexed frame number (1 to 192)
+    const currentFrame = (frameIndex !== undefined ? frameIndex : Math.floor(scrollProgress * 192)) + 1;
+
+    // Face Focus camera angle factor for frames 1 to 27
+    let faceWeight = 0;
+    if (currentFrame <= 20) {
+      faceWeight = 1.0;
+    } else if (currentFrame <= 27) {
+      faceWeight = (28 - currentFrame) / 8; // Smooth ease-out into frame 28
+    } else {
+      faceWeight = 0.0;
+    }
+
+    // Full-screen cover framing:
+    // Align hair & face under top navbar for frames 1 to 27 while zooming edge-to-edge (no side black bars)
+    const faceY = Math.min(50, height * 0.05) - (imageFrame.naturalHeight * ratio * 0.105);
+    const normalY = (height - imageFrame.naturalHeight * ratio) / 2 + verticalOffset;
+
     const centerShift_x = (width - imageFrame.naturalWidth * ratio) / 2;
-    const centerShift_y = (height - imageFrame.naturalHeight * ratio) / 2;
+    const centerShift_y = normalY * (1 - faceWeight) + faceY * faceWeight;
 
     ctx.drawImage(
       imageFrame,
@@ -103,7 +124,7 @@ export function renderCanvasFrame(
 
     // Dynamic HUD Hologram Circles
     const centerX = width * 0.5;
-    const centerY = height * 0.45;
+    const centerY = height * 0.50;
     const baseRadius = Math.min(width, height) * 0.22;
 
     ctx.save();

@@ -80,7 +80,8 @@ export const HeroCanvas: React.FC<HeroCanvasProps> = ({ totalFrames = 192 }) => 
         canvas.width,
         canvas.height,
         scrollProgress,
-        frameImage
+        frameImage,
+        frameIndex
       );
 
       animationFrameId = requestAnimationFrame(render);
