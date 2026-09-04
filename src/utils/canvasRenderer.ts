@@ -73,8 +73,8 @@ export function renderCanvasFrame(
     }
 
     // Full-screen cover framing:
-    // Align hair & face under top navbar for frames 1 to 27 while zooming edge-to-edge (no side black bars)
-    const faceY = Math.min(50, height * 0.05) - (imageFrame.naturalHeight * ratio * 0.105);
+    // Center face in middle of screen for frames 1 to 27 while zooming edge-to-edge
+    const faceY = (height * 0.46) - (imageFrame.naturalHeight * ratio * 0.20);
     const normalY = (height - imageFrame.naturalHeight * ratio) / 2 + verticalOffset;
 
     const centerShift_x = (width - imageFrame.naturalWidth * ratio) / 2;
