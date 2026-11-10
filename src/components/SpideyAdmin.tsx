@@ -397,6 +397,7 @@ export interface Certificate {
   imageUrl?: string;
   pdfUrl?: string;
   images?: string[];
+  slideLabels?: string[];
 }
 
 export interface SkillItem {

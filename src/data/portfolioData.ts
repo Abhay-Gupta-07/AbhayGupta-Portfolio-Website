@@ -28,6 +28,7 @@ export interface Certificate {
   imageUrl?: string;
   pdfUrl?: string;
   images?: string[];
+  slideLabels?: string[];
 }
 
 export interface SkillItem {
@@ -439,6 +440,47 @@ export const initialPortfolioData: PortfolioData = {
   ],
   "certificates": [
     {
+      "id": "cert-mahaveer-technomist-1st-prize",
+      "title": "1st Prize Winner — Web Development (Technomist 2K25)",
+      "issuer": "Mahaveer Institute of Science & Technology",
+      "date": "20 MAR 2025",
+      "badge": "1st Prize Trophy Winner (Technomist 2K25)",
+      "skillsCovered": [
+        "Full Stack Web Development",
+        "Frontend Architecture",
+        "UI/UX Design & Prototyping",
+        "Competitive Web Design",
+        "JavaScript & Frameworks"
+      ],
+      "imageUrl": "/assets/certificates/cert-mahaveer-technomist-1st-prize.jpg"
+    },
+    {
+      "id": "cert-oasis-infobyte-internship",
+      "title": "Web Development & Designing Internship (Star Performer)",
+      "issuer": "Oasis Infobyte (AICTE OIB-SIP)",
+      "date": "15 OCT 2026",
+      "badge": "Star Performer, LOR & Internship (3 Slides)",
+      "skillsCovered": [
+        "Web Development & Designing",
+        "Frontend UI Engineering",
+        "HTML5, CSS3 & JavaScript",
+        "Responsive Web Applications",
+        "Star Performer Distinction",
+        "Letter of Recommendation (LOR)"
+      ],
+      "imageUrl": "/assets/certificates/cert-oasis-completion.jpg",
+      "images": [
+        "/assets/certificates/cert-oasis-completion.jpg",
+        "/assets/certificates/cert-oasis-lor.jpg",
+        "/assets/certificates/cert-oasis-star-performer.jpg"
+      ],
+      "slideLabels": [
+        "Slide 1: Certificate of Completion",
+        "Slide 2: Letter of Recommendation (LOR)",
+        "Slide 3: Star Performer Appreciation"
+      ]
+    },
+    {
       "id": "cert-arah-infotech-aiml",
       "title": "AI/ML Engineer Internship Certificate",
       "issuer": "ARAH INFOTECH PVT LTD",
@@ -456,6 +498,10 @@ export const initialPortfolioData: PortfolioData = {
       "images": [
         "/assets/certificates/cert-arah-infotech-photo.jpg",
         "/assets/certificates/cert-arah-infotech-doc.png"
+      ],
+      "slideLabels": [
+        "Slide 1: Award Ceremony Photo",
+        "Slide 2: Certificate Document"
       ]
     },
     {

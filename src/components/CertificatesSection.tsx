@@ -62,7 +62,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
                   {hasMultipleSlides && (
                     <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded-full bg-crimson-500/90 text-white text-[9px] font-code font-bold flex items-center gap-1 shadow-md">
                       <Layers className="w-3 h-3" />
-                      <span>{cert.images?.length} SLIDES (PHOTO + DOC)</span>
+                      <span>{cert.images?.length} SLIDES</span>
                     </div>
                   )}
 
@@ -240,10 +240,12 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
 
                   {/* Multi-Slide Navigation Tabs */}
                   {selectedCert.images && selectedCert.images.length > 1 && (
-                    <div className="flex items-center justify-center gap-2 pt-1">
+                    <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
                       {selectedCert.images.map((_, sIdx) => {
                         const isCurrent = sIdx === activeSlideIndex;
-                        const label = sIdx === 0 ? "Slide 1: Award Ceremony Photo" : "Slide 2: Certificate Document";
+                        const label = selectedCert.slideLabels && selectedCert.slideLabels[sIdx]
+                          ? selectedCert.slideLabels[sIdx]
+                          : `Slide ${sIdx + 1}`;
                         return (
                           <button
                             key={sIdx}
@@ -278,11 +280,11 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
                   ))}
                 </div>
 
-                {/* External Link */}
-                {(selectedCert.credentialUrl || selectedCert.pdfUrl) && (
-                  <div className="pt-4 border-t border-white/10 flex justify-end">
+                {/* External Link & High-Res View */}
+                <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-end gap-3">
+                  {selectedCert.credentialUrl && (
                     <a
-                      href={selectedCert.pdfUrl || selectedCert.credentialUrl}
+                      href={selectedCert.credentialUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-5 py-2.5 rounded-full text-xs font-bold text-white bg-crimson-500 hover:bg-crimson-600 shadow-md flex items-center gap-2 uppercase tracking-wider transition-all"
@@ -291,8 +293,20 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
                       <span>Verify Official Credential</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                  </div>
-                )}
+                  )}
+                  {((selectedCert.images && selectedCert.images[activeSlideIndex]) || selectedCert.imageUrl) && (
+                    <a
+                      href={(selectedCert.images && selectedCert.images[activeSlideIndex]) || selectedCert.imageUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2.5 rounded-full text-xs font-bold text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 tracking-wider transition-all"
+                    >
+                      <Eye className="w-4 h-4 text-crimson-500" />
+                      <span>View Full Resolution</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
               </div>
             </motion.div>
           </div>

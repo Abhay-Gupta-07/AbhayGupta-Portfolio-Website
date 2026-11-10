@@ -17,7 +17,7 @@ import { SpideyAdmin } from './components/SpideyAdmin';
 
 export const App: React.FC = () => {
   const [portfolioData, setPortfolioData] = useState<PortfolioData>(() => {
-    const saved = localStorage.getItem('abhay_portfolio_data_v7');
+    const saved = localStorage.getItem('abhay_portfolio_data_v8');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
