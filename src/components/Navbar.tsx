@@ -58,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection, onOpenAdmin
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={`w-full max-w-7xl rounded-full glass-pill px-4 sm:px-6 py-2.5 flex items-center justify-between transition-all duration-300 border ${
-          scrolled ? 'border-crimson-500/30 shadow-[0_10px_30px_rgba(255,30,45,0.25)] bg-[#120708]/95' : 'border-white/10 bg-[#120708]/80'
+          scrolled ? 'border-white/15 bg-[#0a0404]/95 shadow-xl' : 'border-white/10 bg-[#0a0404]/80'
         }`}
       >
         {/* Brand / Logo */}
@@ -85,11 +85,11 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection, onOpenAdmin
                   {isActive && (
                     <motion.div
                       layoutId="activePill"
-                      className="absolute inset-0 bg-gradient-to-r from-crimson-600 via-[#ff1e2d] to-red-700 rounded-full -z-10 border border-red-400/60 shadow-[0_0_25px_rgba(255,30,45,0.95)]"
+                      className="absolute inset-0 bg-[#ff1e2d] rounded-full z-0 shadow-md"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
-                  {link.label}
+                  <span className="relative z-10">{link.label}</span>
                 </a>
               </li>
             );
@@ -100,7 +100,7 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection, onOpenAdmin
         <div className="hidden sm:flex items-center gap-3">
           <button
             onClick={handleDownloadCV}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-600 border border-crimson-500/50 shadow-[0_0_20px_rgba(255,30,45,0.4)] hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-white bg-crimson-600 hover:bg-crimson-500 border border-crimson-500/50 hover:scale-105 active:scale-95 transition-all"
           >
             <Download className="w-3.5 h-3.5" />
             Download CV
@@ -119,9 +119,9 @@ export const Navbar: React.FC<NavbarProps> = ({ data, activeSection, onOpenAdmin
         {/* Mobile Hamburger Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 text-gray-300 hover:text-white rounded-lg focus:outline-none"
+          className="lg:hidden p-2 text-crimson-500 hover:text-white rounded-lg focus:outline-none"
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileMenuOpen ? <X className="w-6 h-6 text-crimson-500" /> : <Menu className="w-6 h-6 text-crimson-500" />}
         </button>
       </motion.nav>
 

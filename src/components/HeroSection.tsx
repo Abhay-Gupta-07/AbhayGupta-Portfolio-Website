@@ -36,15 +36,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
             </div>
 
             <h1 className="font-bebas text-7xl sm:text-8xl lg:text-9xl tracking-tight text-white leading-[0.85] font-bold uppercase flex flex-col drop-shadow-2xl relative z-10">
-              <span className="text-[#ff1e2d] text-glow drop-shadow-[0_0_35px_rgba(255,30,45,0.9)]">
+              <span className="text-[#ff1e2d]">
                 ABHAY
               </span>
               <span className="text-white">GUPTA</span>
             </h1>
           </div>
 
-          {/* Glowing Red Subtitle Spec Bar */}
-          <div className="font-code text-xs sm:text-sm text-crimson-500 font-extrabold tracking-wider uppercase flex flex-wrap items-center gap-2 pt-1 drop-shadow-[0_0_10px_rgba(255,30,45,0.6)]">
+          {/* Red Subtitle Spec Bar */}
+          <div className="font-code text-xs sm:text-sm text-crimson-500 font-extrabold tracking-wider uppercase flex flex-wrap items-center gap-2 pt-1">
             <span>AI & MACHINE LEARNING ENGINEER</span>
             <span className="text-white">•</span>
             <span>FULL-STACK & FLUTTER DEVELOPER</span>
@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
           <div className="flex flex-wrap items-center gap-3 pt-3">
             <a
               href="#contact"
-              className="px-6 py-3 rounded-full text-xs font-bold text-white bg-crimson-500 hover:bg-crimson-600 shadow-[0_0_25px_rgba(255,30,45,0.6)] border border-crimson-500/50 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 uppercase tracking-wider"
+              className="px-6 py-3 rounded-full text-xs font-bold text-white bg-crimson-500 hover:bg-crimson-600 shadow-md border border-crimson-500/50 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 uppercase tracking-wider"
             >
               GET IN TOUCH
               <ArrowRight className="w-4 h-4" />
@@ -97,7 +97,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
           </div>
 
           {/* Glass Quote Card */}
-          <div className="w-full max-w-sm p-4 rounded-2xl glass-card border border-crimson-500/30 flex items-start gap-3 shadow-lg">
+          <div className="w-full max-w-sm p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 flex items-start gap-3 shadow-lg">
             <Sparkles className="w-4 h-4 text-crimson-500 shrink-0 mt-0.5" />
             <p className="text-xs text-gray-300 leading-snug font-medium">
               Building intelligent web applications, AI face recognition biometric systems, and leading campus tech innovation at MIST Hyderabad.
@@ -106,17 +106,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
 
           {/* Right Vertical Stats Stack */}
           <div className="w-full max-w-sm grid grid-cols-3 gap-3 text-left pt-1">
-            <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
+            <div className="p-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 space-y-0.5 hover:border-white/20 transition-all">
               <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">FINAL YR</div>
               <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">B.TECH CSE (AI/ML) @ MIST</div>
             </div>
 
-            <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
+            <div className="p-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 space-y-0.5 hover:border-white/20 transition-all">
               <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">10+</div>
               <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">FEATURED AI PROJECTS</div>
             </div>
 
-            <div className="p-3 rounded-xl bg-black/40 border border-white/10 space-y-0.5">
+            <div className="p-3 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 space-y-0.5 hover:border-white/20 transition-all">
               <div className="font-bebas text-2xl text-crimson-500 font-bold leading-none">MIST</div>
               <div className="text-[9px] font-code text-gray-400 font-semibold leading-tight">TECHNICAL AI LEAD</div>
             </div>

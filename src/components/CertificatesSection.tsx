@@ -34,7 +34,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
           Verified Credentials & Accreditations
         </div>
         <h2 className="font-bebas text-3xl sm:text-4xl text-white tracking-widest uppercase">
-          AWARDS & <span className="text-crimson-500 text-glow">CERTIFICATIONS ({certificates.length})</span>
+          AWARDS & <span className="text-crimson-500">CERTIFICATIONS ({certificates.length})</span>
         </h2>
       </div>
 
@@ -53,14 +53,11 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.08 }}
               onClick={() => handleOpenCert(cert)}
-              className="group relative p-4 rounded-2xl glass-card bg-[#120708]/40 backdrop-blur-md border border-white/10 hover:border-crimson-500/60 hover:bg-[#120708]/60 hover:shadow-[0_12px_35px_rgba(255,30,45,0.3)] transition-all duration-350 flex flex-col justify-between cursor-pointer overflow-hidden"
+              className="group relative p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/[0.08] transition-all duration-350 flex flex-col justify-between cursor-pointer overflow-hidden"
             >
-              {/* Top Red Glow Hover Line */}
-              <div className="absolute top-0 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-crimson-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
               <div>
                 {/* Thumbnail Image Container */}
-                <div className="w-full h-44 bg-black/40 backdrop-blur-sm rounded-xl overflow-hidden mb-3.5 border border-white/10 flex items-center justify-center relative group-hover:border-crimson-500/40 transition-all">
+                <div className="w-full h-44 bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden mb-3.5 border border-white/10 flex items-center justify-center relative group-hover:border-white/20 transition-all">
                   {/* Multi-Slide Badge */}
                   {hasMultipleSlides && (
                     <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded-full bg-crimson-500/90 text-white text-[9px] font-code font-bold flex items-center gap-1 shadow-md">
@@ -141,7 +138,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-3xl bg-[#120708] border border-crimson-500/50 rounded-2xl p-6 shadow-[0_0_50px_rgba(255,30,45,0.4)] overflow-hidden max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-3xl bg-[#0e0708]/95 border border-white/10 rounded-2xl p-6 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             >
               {/* Close Button */}
               <button
@@ -167,7 +164,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
               {/* Modal Viewer: PDF or Image Carousel */}
               {isPdfCert(selectedCert) ? (
                 <div className="w-full h-72 sm:h-96 bg-black/90 rounded-xl overflow-hidden mb-5 border border-crimson-500/40 p-6 flex flex-col items-center justify-center text-center space-y-4 relative">
-                  <div className="w-16 h-16 rounded-2xl bg-crimson-500/20 border border-crimson-500/50 text-crimson-500 flex items-center justify-center shadow-[0_0_30px_rgba(255,30,45,0.3)]">
+                  <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 text-crimson-500 flex items-center justify-center">
                     <FileCheck className="w-8 h-8" />
                   </div>
                   <div>
@@ -181,7 +178,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
                       href={selectedCert.pdfUrl || selectedCert.imageUrl || selectedCert.credentialUrl || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 py-2.5 rounded-full bg-crimson-500 hover:bg-crimson-600 text-white text-xs font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(255,30,45,0.5)] transition-all"
+                      className="px-6 py-2.5 rounded-full bg-crimson-500 hover:bg-crimson-600 text-white text-xs font-bold flex items-center gap-2 shadow-md transition-all"
                     >
                       <Eye className="w-4 h-4" />
                       <span>Open Full PDF Document</span>
@@ -253,7 +250,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
                             onClick={() => setActiveSlideIndex(sIdx)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-code font-bold transition-all flex items-center gap-1.5 ${
                               isCurrent
-                                ? 'bg-crimson-500 text-white border border-crimson-400 shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+                                ? 'bg-crimson-500 text-white border border-crimson-500 shadow-md'
                                 : 'bg-white/5 hover:bg-white/10 text-gray-400 border border-white/10'
                             }`}
                           >
@@ -288,7 +285,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
                       href={selectedCert.pdfUrl || selectedCert.credentialUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-5 py-2.5 rounded-full text-xs font-bold text-white bg-crimson-500 hover:bg-crimson-600 shadow-[0_0_20px_rgba(255,30,45,0.6)] flex items-center gap-2 uppercase tracking-wider transition-all"
+                      className="px-5 py-2.5 rounded-full text-xs font-bold text-white bg-crimson-500 hover:bg-crimson-600 shadow-md flex items-center gap-2 uppercase tracking-wider transition-all"
                     >
                       <Award className="w-4 h-4" />
                       <span>Verify Official Credential</span>

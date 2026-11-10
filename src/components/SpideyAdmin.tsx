@@ -528,16 +528,16 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="w-full max-w-md p-8 rounded-3xl glass-card-crimson border border-crimson-500/40 shadow-[0_20px_60px_rgba(255,30,45,0.3)] space-y-6 relative z-10 text-center"
+          className="w-full max-w-md p-8 rounded-3xl glass-card border border-white/10 shadow-2xl space-y-6 relative z-10 text-center"
         >
           {/* Header Shield */}
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-crimson-600 to-red-900 border border-crimson-500/60 flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(255,30,45,0.5)]">
-            <Lock className="w-8 h-8 text-white animate-pulse" />
+          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto shadow-lg">
+            <Lock className="w-8 h-8 text-crimson-500 animate-pulse" />
           </div>
 
           <div>
             <h2 className="font-bebas text-4xl text-white tracking-wide">
-              SPIDEY ADMIN <span className="text-crimson-500 text-glow">SECURITY LOCK</span>
+              SPIDEY ADMIN <span className="text-crimson-500">SECURITY LOCK</span>
             </h2>
             <p className="text-gray-400 text-xs font-code mt-1">
               // RESTRICTED CONSOLE FOR ABHAY GUPTA ONLY
@@ -588,7 +588,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-crimson-600 via-crimson-500 to-red-700 hover:from-crimson-500 hover:to-crimson-600 shadow-[0_0_25px_rgba(255,30,45,0.5)] border border-crimson-500/50 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all text-xs"
+              className="w-full py-3.5 rounded-xl font-semibold text-white bg-crimson-600 hover:bg-crimson-500 shadow-md border border-crimson-500/50 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all text-xs"
             >
               <ShieldCheck className="w-4 h-4" />
               AUTHENTICATE SPIDEY ACCESS
@@ -616,7 +616,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-crimson-500/30 pb-6">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-crimson-500/20 border border-crimson-500/50 text-crimson-500 shadow-[0_0_20px_rgba(255,30,45,0.4)]">
+            <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-crimson-500 shadow-md">
               <ShieldAlert className="w-8 h-8" />
             </div>
             <div>
@@ -642,7 +642,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
 
             <button
               onClick={handleSave}
-              className="px-5 py-2.5 rounded-xl font-semibold text-white bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-600 shadow-[0_0_20px_rgba(255,30,45,0.4)] flex items-center gap-2 text-xs"
+              className="px-5 py-2.5 rounded-xl font-semibold text-white bg-crimson-600 hover:bg-crimson-500 shadow-md flex items-center gap-2 text-xs"
             >
               <Save className="w-4 h-4" />
               Save All Changes
@@ -726,7 +726,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
             onClick={() => setActiveTab('projects')}
             className={`px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
               activeTab === 'projects'
-                ? 'bg-crimson-500 text-white shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+                ? 'bg-crimson-500 text-white shadow-md'
                 : 'bg-white/5 text-gray-400 hover:text-white'
             }`}
           >
@@ -738,7 +738,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
             onClick={() => setActiveTab('certificates')}
             className={`px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
               activeTab === 'certificates'
-                ? 'bg-crimson-500 text-white shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+                ? 'bg-crimson-500 text-white shadow-md'
                 : 'bg-white/5 text-gray-400 hover:text-white'
             }`}
           >
@@ -750,7 +750,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
             onClick={() => setActiveTab('profile')}
             className={`px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
               activeTab === 'profile'
-                ? 'bg-crimson-500 text-white shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+                ? 'bg-crimson-500 text-white shadow-md'
                 : 'bg-white/5 text-gray-400 hover:text-white'
             }`}
           >
@@ -762,7 +762,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
             onClick={() => setActiveTab('socials')}
             className={`px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
               activeTab === 'socials'
-                ? 'bg-crimson-500 text-white shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+                ? 'bg-crimson-500 text-white shadow-md'
                 : 'bg-white/5 text-gray-400 hover:text-white'
             }`}
           >
@@ -774,7 +774,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
             onClick={() => setActiveTab('inbox')}
             className={`px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
               activeTab === 'inbox'
-                ? 'bg-crimson-500 text-white shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+                ? 'bg-crimson-500 text-white shadow-md'
                 : 'bg-white/5 text-gray-400 hover:text-white'
             }`}
           >
@@ -786,7 +786,7 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
             onClick={() => setActiveTab('database')}
             className={`px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
               activeTab === 'database'
-                ? 'bg-crimson-500 text-white shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+                ? 'bg-crimson-500 text-white shadow-md'
                 : 'bg-white/5 text-gray-400 hover:text-white'
             }`}
           >
@@ -1474,15 +1474,6 @@ export const initialPortfolioData: PortfolioData = ${JSON.stringify(dataToExport
                   />
                 </div>
 
-                <div>
-                  <label className="text-xs font-code text-gray-400">Live Demo URL</label>
-                  <input
-                    type="text"
-                    value={editingProject.liveUrl || ''}
-                    onChange={(e) => setEditingProject({ ...editingProject, liveUrl: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white"
-                  />
-                </div>
 
                 <div>
                   <label className="text-xs font-code text-gray-400">GitHub Repository URL</label>

@@ -96,7 +96,7 @@ export const MacOSDock: React.FC<MacOSDockProps> = ({ data, onOpenAdmin }) => {
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.5 }}
-        className="glass-dock pointer-events-auto px-4 py-2.5 rounded-2xl flex items-center gap-3 backdrop-blur-2xl border border-crimson-500/30 shadow-[0_15px_40px_rgba(0,0,0,0.8),0_0_20px_rgba(255,30,45,0.2)]"
+        className="glass-dock pointer-events-auto px-4 py-2.5 rounded-2xl flex items-center gap-3 backdrop-blur-2xl border border-white/10 shadow-[0_15px_40px_rgba(0,0,0,0.8)]"
       >
         {dockItems.map((item) => (
           <DockIcon key={item.id} mouseX={mouseX} item={item} />
@@ -158,7 +158,7 @@ const DockIcon: React.FC<DockIconProps> = ({ mouseX, item }) => {
       whileTap={{ scale: 0.9 }}
       className={`relative group rounded-xl flex items-center justify-center transition-colors ${
         item.highlight
-          ? 'bg-crimson-500/20 border border-crimson-500/50 shadow-[0_0_15px_rgba(255,30,45,0.4)]'
+          ? 'bg-crimson-500/20 border border-crimson-500/50 shadow-md'
           : 'bg-white/5 hover:bg-white/15 border border-white/10'
       }`}
     >

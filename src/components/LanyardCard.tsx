@@ -75,7 +75,7 @@ export const LanyardCard: React.FC<LanyardCardProps> = ({ data }) => {
           Pull & Release Me!
         </motion.div>
 
-        <div className="w-64 sm:w-72 h-[380px] rounded-3xl bg-[#120708] relative overflow-hidden border-4 border-neutral-300 shadow-[0_20px_50px_rgba(255,30,45,0.4)] flex flex-col justify-between">
+        <div className="w-64 sm:w-72 h-[380px] rounded-3xl bg-[#120708] relative overflow-hidden border-4 border-neutral-300 shadow-2xl flex flex-col justify-between">
 
           {/* Silver Corner Screws / Rivets */}
           <div className="absolute top-2 left-2 w-2.5 h-2.5 rounded-full bg-neutral-200 border border-neutral-500 shadow-sm z-30" />

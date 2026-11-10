@@ -25,7 +25,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
           Technical Proficiency
         </div>
         <h2 className="font-bebas text-3xl sm:text-4xl text-white tracking-widest uppercase">
-          ENGINEERING <span className="text-crimson-500 text-glow">SKILLS & TECH MATRIX</span>
+          ENGINEERING <span className="text-crimson-500">SKILLS & TECH MATRIX</span>
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
           Proven hands-on mastery in modern front-end & back-end web frameworks, computer vision AI libraries, cross-platform mobile frameworks, and micro-controller hardware.
@@ -42,7 +42,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
               onClick={() => setActiveTab(idx)}
               className={`flex items-center gap-2 px-6 py-3 rounded-full text-xs font-semibold transition-all duration-300 ${
                 isActive
-                  ? 'bg-crimson-500 text-white shadow-[0_0_25px_rgba(255,30,45,0.5)] border border-crimson-500/50'
+                  ? 'bg-crimson-500 text-white shadow-md border border-crimson-500'
                   : 'bg-white/5 text-gray-400 hover:text-white border border-white/10 hover:border-white/20'
               }`}
             >
@@ -73,9 +73,9 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
             initial={{ opacity: 0, x: sIdx % 2 === 0 ? -20 : 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: sIdx * 0.05 }}
-            className={`p-5 rounded-xl glass-card bg-[#120708]/40 backdrop-blur-md border transition-all duration-300 hover:border-crimson-500/50 hover:bg-[#120708]/60 ${
+            className={`p-5 rounded-xl bg-white/5 backdrop-blur-md border transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08] ${
               skill.highlight
-                ? 'border-crimson-500/40 bg-[#1a0a0c]/50 shadow-[0_0_20px_rgba(255,30,45,0.2)]'
+                ? 'border-white/20 bg-white/[0.08]'
                 : 'border-white/10'
             }`}
           >
@@ -102,7 +102,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
                 initial={{ width: 0 }}
                 animate={{ width: `${skill.level}%` }}
                 transition={{ duration: 1, ease: 'easeOut' }}
-                className="h-full bg-gradient-to-r from-crimson-700 via-crimson-500 to-red-400 rounded-full shadow-[0_0_10px_rgba(255,30,45,0.8)]"
+                className="h-full bg-gradient-to-r from-crimson-700 via-crimson-500 to-red-400 rounded-full"
               />
             </div>
           </motion.div>

@@ -25,7 +25,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({ services }) => {
           Technical Capabilities
         </div>
         <h2 className="font-bebas text-3xl sm:text-4xl text-white tracking-widest uppercase">
-          SPECIALIZED <span className="text-crimson-500 text-glow">SERVICES</span> & SKILLS
+          SPECIALIZED <span className="text-crimson-500">SERVICES</span> & SKILLS
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base font-outfit">
           Delivering production-ready engineering solutions spanning modern full-stack web applications, real-time AI vision models, cross-platform mobile apps, and IoT hardware telemetry systems.
@@ -41,14 +41,11 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({ services }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: idx * 0.1 }}
-            className="group relative p-8 rounded-2xl glass-card bg-[#120708]/40 backdrop-blur-md border border-white/10 hover:border-crimson-500/60 hover:bg-[#120708]/60 hover:shadow-[0_15px_40px_rgba(255,30,45,0.3)] transition-all duration-350 flex flex-col justify-between"
+            className="group relative p-8 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/[0.08] transition-all duration-350 flex flex-col justify-between"
           >
-            {/* Top Glowing Red Accent */}
-            <div className="absolute top-0 left-8 right-8 h-1 bg-gradient-to-r from-transparent via-crimson-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
             <div className="space-y-4">
               {/* Icon Container */}
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-crimson-950/40 via-black/40 to-black/60 backdrop-blur-sm border border-crimson-500/30 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-crimson-500 transition-transform">
+              <div className="w-14 h-14 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-white/20 transition-all">
                 {iconMap[service.icon] || <Code2 className="w-7 h-7 text-crimson-500" />}
               </div>
 

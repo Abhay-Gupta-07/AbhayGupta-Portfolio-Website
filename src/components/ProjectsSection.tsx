@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Sparkles, ArrowUpRight } from 'lucide-react';
+import { Sparkles, ArrowUpRight } from 'lucide-react';
 import type { Project } from '../data/portfolioData';
 import { ProjectModal } from './ProjectModal';
 
@@ -28,7 +28,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
           Production Engineering
         </div>
         <h2 className="font-bebas text-3xl sm:text-4xl text-white tracking-widest uppercase">
-          FEATURED <span className="text-crimson-500 text-glow">PROJECTS</span>
+          FEATURED <span className="text-crimson-500">PROJECTS</span>
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
           Exploration of real-world production projects ranging from high-FPS dark web apps and AI computer vision algorithms to IoT hardware telemetry dashboards.
@@ -45,7 +45,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
               onClick={() => setSelectedCategory(cat)}
               className={`px-5 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
                 isActive
-                  ? 'bg-crimson-500 text-white shadow-[0_0_20px_rgba(255,30,45,0.5)] border border-crimson-500/50'
+                  ? 'bg-crimson-500 text-white shadow-md border border-crimson-500'
                   : 'bg-white/5 text-gray-400 hover:text-white border border-white/10 hover:border-white/20'
               }`}
             >
@@ -64,11 +64,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: idx * 0.1 }}
-            className="group relative rounded-2xl glass-card bg-[#120708]/40 backdrop-blur-md border border-white/10 hover:border-crimson-500/60 hover:bg-[#120708]/60 overflow-hidden flex flex-col justify-between hover:shadow-[0_15px_45px_rgba(255,30,45,0.3)] transition-all duration-350"
+            className="group relative rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/[0.08] overflow-hidden flex flex-col justify-between transition-all duration-350"
           >
-            {/* Top Red Glow Hover Line */}
-            <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-transparent via-crimson-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-20" />
-
             {/* Card Top Media Image */}
             <div className="relative h-52 w-full overflow-hidden bg-neutral-900">
               <img
@@ -79,12 +76,12 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
               <div className="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/40 to-transparent" />
 
               {/* Category Pill Badge */}
-              <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-crimson-500/30 text-[10px] font-code font-bold text-crimson-500 uppercase">
+              <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10px] font-code font-bold text-white uppercase">
                 {project.category}
               </div>
 
               {/* Metric Tag */}
-              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-crimson-500/20 backdrop-blur-md border border-crimson-500/40 text-[10px] font-code text-white">
+              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10px] font-code text-white">
                 ⚡ {project.metrics}
               </div>
             </div>
@@ -122,17 +119,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                   <ArrowUpRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
                 </button>
 
-                <div className="flex items-center gap-2">
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="Live Demo"
-                    className="p-2 rounded-full bg-white/5 hover:bg-crimson-500/20 border border-white/10 hover:border-crimson-500/40 text-gray-300 hover:text-crimson-500 transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                  {project.githubUrl && (
+                {project.githubUrl && (
+                  <div className="flex items-center gap-2">
                     <a
                       href={project.githubUrl}
                       target="_blank"
@@ -144,8 +132,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) =>
                         <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                       </svg>
                     </a>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

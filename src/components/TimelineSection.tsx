@@ -23,7 +23,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ timeline }) =>
           Journey & Milestones
         </div>
         <h2 className="font-bebas text-3xl sm:text-4xl text-white tracking-widest uppercase">
-          CAREER & <span className="text-crimson-500 text-glow">LEADERSHIP TIMELINE</span>
+          CAREER & <span className="text-crimson-500">LEADERSHIP TIMELINE</span>
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
           Journey spanning Intermediate MPC, B.Tech CSE (AI & ML) at MIST, AI engineering internship at Arah Infotech, winning 1st Prize at Technomist 2K25, founding Build Studio, and building real-world AI products.
@@ -45,16 +45,16 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ timeline }) =>
             <div className="absolute left-0 top-6 w-4 sm:w-5 h-0.5 bg-crimson-500/80 group-hover:bg-crimson-500 transition-colors" />
 
             {/* Timeline Node Icon (Positioned Beside Line - 0 Overlap) */}
-            <div className="absolute left-4 sm:left-5 top-1 w-10 h-10 rounded-full bg-[#120708]/80 backdrop-blur-md border-2 border-crimson-500 flex items-center justify-center shadow-[0_0_20px_rgba(255,30,45,0.6)] group-hover:scale-110 transition-transform z-10">
+            <div className="absolute left-4 sm:left-5 top-1 w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform z-10">
               {typeIconMap[item.type] || <Award className="w-5 h-5 text-crimson-500" />}
             </div>
 
             {/* Timeline Card */}
-            <div className="p-6 sm:p-8 rounded-2xl glass-card bg-[#120708]/40 backdrop-blur-md border border-white/10 hover:border-crimson-500/60 hover:bg-[#120708]/60 hover:shadow-[0_15px_40px_rgba(255,30,45,0.3)] transition-all duration-350">
+            <div className="p-6 sm:p-8 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/20 hover:bg-white/[0.08] transition-all duration-350">
               
               {/* Header Info */}
               <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                <span className="px-3 py-1 rounded-full bg-crimson-500/15 border border-crimson-500/30 text-crimson-500 text-xs font-code font-bold flex items-center gap-1.5">
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-white text-xs font-code font-bold flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5" />
                   {item.period}
                 </span>
